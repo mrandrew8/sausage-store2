@@ -29,4 +29,4 @@ telegram-notification-backend:
     - 'curl -X POST -H "Content-type: application/json" --data "{\"chat_id\": \"-1002134018008\", \"text\": \"${TEXT}" }" $TLGRM'
   needs:
     - build-backend-code-job
-# коммент
+#коммент
