@@ -26,7 +26,7 @@ telegram-notification-backend:
     variables:
     - $CI_COMMIT_MESSAGE =~ /send notification/
   script:
-    - 'curl -X POST -H "Content-type: application/json" --data "{\"chat_id\": \"-1002134018008\", \"text\": \"{$TEXT}" }" $TLGRM'
+    - 'curl -X POST -H "Content-type: application/json" --data "{\"chat_id\": \"-1002134018008\", \"text\": \"${TEXT}" }" $TLGRM'
   needs:
     - build-backend-code-job
 # коммент
