@@ -40,7 +40,7 @@ telegram-notification-backend:
       - pwd
       - echo "The BACK_CI_JOB_ID is ${CI_PROJECT_DIR}"
       - echo "The BACK_CI_JOB_ID is $PREV_JOB_ID"
-#    - 'curl -X POST -H "Content-type: application/json" --data "{\"chat_id\": \"-1002134018008\", \"text\": \"${TEXT}\" }" ${TLGRM}'
+      - 'curl -X POST -H "Content-type: application/json" --data "{\"chat_id\": \"-1002134018008\", \"text\": \"${TEXT}\" }" ${TLGRM}'
       - ls -lah
       - pwd
   needs:
