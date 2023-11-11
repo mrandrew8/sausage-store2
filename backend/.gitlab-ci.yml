@@ -15,6 +15,7 @@ build-backend-code-job:
     - echo "PREV_JOB_ID=${CI_JOB_ID}" >> build.env
     - ls -lah
     - pwd
+    - echo "The BACK_CI_JOB_ID is ${CI_PROJECT_DIR}"
   artifacts:
     paths:
       - backend/target/sausage-store-0.0.1-SNAPSHOT.jar
@@ -37,6 +38,7 @@ telegram-notification-backend:
   script:
       - ls -lah
       - pwd
+      - echo "The BACK_CI_JOB_ID is ${CI_PROJECT_DIR}"
       - echo "The BACK_CI_JOB_ID is $PREV_JOB_ID"
 #    - 'curl -X POST -H "Content-type: application/json" --data "{\"chat_id\": \"-1002134018008\", \"text\": \"${TEXT}\" }" ${TLGRM}'
       - ls -lah
