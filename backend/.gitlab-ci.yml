@@ -11,6 +11,8 @@ build-backend-code-job:
     - cd backend
     - mvn package
     - echo "PREV_JOB_ID=${CI_JOB_ID}" >> build.env
+    - ls -lah
+    - pwd
   artifacts:
     paths:
       - backend/target/sausage-store-0.0.1-SNAPSHOT.jar
@@ -31,9 +33,7 @@ telegram-notification-backend:
     variables:
     - $CI_COMMIT_MESSAGE =~ /send notification/
   script:
-    - ls -lah
-    - pwd
-    - echo "The BACK_CI_JOB_ID is $PREV_JOB_ID"
+      - echo "The BACK_CI_JOB_ID is $PREV_JOB_ID"
 #    - 'curl -X POST -H "Content-type: application/json" --data "{\"chat_id\": \"-1002134018008\", \"text\": \"${TEXT}\" }" ${TLGRM}'
   needs:
     - build-backend-code-job
