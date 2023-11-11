@@ -12,7 +12,7 @@ build-backend-code-job:
     - pwd
     - cd backend
     - mvn package
-    - echo "PREV_JOB_ID=${CI_JOB_ID}" >> build.env
+    - echo "PREV_JOB_ID=${CI_JOB_ID}" >> ${CI_PROJECT_DIR}/build.env #доавил тут ci_project_dir
     - ls -lah
     - pwd
     - echo "The BACK_CI_JOB_ID is ${CI_PROJECT_DIR}"
