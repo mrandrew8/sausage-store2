@@ -21,7 +21,7 @@ build-backend-code-job:
       - backend/target/sausage-store-0.0.1-SNAPSHOT.jar
     expire_in: 1 day
     reports:
-      dotenv: build.env   
+      dotenv: ${CI_PROJECT_DIR}/build.env   #добавил тут переменную посмотрим как отреагирует на нее CI_PROJECT_DIR
     
 
 
