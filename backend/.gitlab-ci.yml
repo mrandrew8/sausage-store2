@@ -41,4 +41,4 @@ telegram-notification-backend: #задача с именем telegram-notificati
      # - pwd - дополнительные проверки
   needs:
     - build-backend-code-job # прописываем зависимость от джоба с именем build-backend-code-job
-#коммент
+
