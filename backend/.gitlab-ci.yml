@@ -1,0 +1,44 @@
+stages: 
+  - build  #сборка
+  - notify  #уведомление
+  
+build-backend-code-job: #задача с именем build-backend-code-job
+  stage: build  #этап build
+  only: 
+    changes:
+    - backend/* #только для изменений в директории backend
+  script:
+    - cd backend
+    - mvn package
+    - echo "PREV_JOB_ID=${CI_JOB_ID}" >> ${CI_PROJECT_DIR}/build.env #доавил тут ci_project_dir
+  #  - ls -lah - выполнял проверки, дебаг
+  #  - pwd - выполнял проверки, дебаг
+  #  - echo "The BACK_CI_JOB_ID is ${CI_PROJECT_DIR}" - проверка, что записано в переменную
+  artifacts:
+    paths:
+      - backend/target/sausage-store-0.0.1-SNAPSHOT.jar  #сохранение собранного бэкенда как артефакта 
+    expire_in: 1 day # указал срок хранения для артефакта
+    reports:
+      dotenv: ${CI_PROJECT_DIR}/build.env   #добавил тут переменную CI_PROJECT_DIR, так как на пердыдущем шаге записал переменную в директорию CI_PROJECT_DIR
+    
+
+
+telegram-notification-backend: #задача с именем telegram-notification-backend
+  variables:
+      TEXT: "Андрей Николаев собрал backend ${CI_PROJECT_URL}/-/jobs/${PREV_JOB_ID}/artifacts/download" #обьявление перменных, где ci_project_url - урл проекта, prev_job_id - переменная, обявленная в джобе build-backend-code-job и сохраненная в {CI_PROJECT_DIR}/build.env
+      TLGRM: "https://api.telegram.org/bot5933756043:AAE8JLL5KIzgrNBeTP5e-1bkbJy4YRoeGjs/sendMessage"
+  stage: notify #этап уведомлений
+  only:
+    changes:
+    - backend/* #только для изменений в директории backend
+    variables:
+    - $CI_COMMIT_MESSAGE =~ /send notification/ # только для изменений содержащих в сообщении коммита "send notification"
+  script:
+     # - echo "The BACK_CI_JOB_ID is ${CI_PROJECT_DIR}" - проверки, при помощи которых опредлял CI_PROJECT_DIR
+     # - echo "The BACK_CI_JOB_ID is $PREV_JOB_ID" - проверки, при помощи которых я определял, что записано в переменную prev_job_id
+      - 'curl -X POST -H "Content-type: application/json" --data "{\"chat_id\": \"-1002134018008\", \"text\": \"${TEXT}\" }" ${TLGRM}' #отправка курлом сообщения методом post
+     # - ls -lah - дополнительные проверки
+     # - pwd - дополнительные проверки
+  needs:
+    - build-backend-code-job # прописываем зависимость от джоба с именем build-backend-code-job
+
