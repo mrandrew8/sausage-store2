@@ -32,6 +32,12 @@ build-backend-code-job: #задача с именем build-backend-code-job
       - ${CI_PROJECT_DIR}/.m2/repository
 
 
+sonarqube-backend-sast:
+  stage: test
+  needs:
+    - build-backend-code-job
+
+
 
 spotbugs-sast:  #задача с именем spotbugs-sast
   variables: 
