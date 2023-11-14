@@ -3,7 +3,7 @@ include:
 
 stages: 
   - build  #сборка
-  - test
+  - test #test
   - notify  #уведомление
 
 variables:
