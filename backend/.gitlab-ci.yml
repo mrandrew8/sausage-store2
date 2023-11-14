@@ -7,7 +7,7 @@ stages:
   - notify  #уведомление
 
 variables:
-  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2"
 
 build-backend-code-job: #задача с именем build-backend-code-job
   stage: build  #этап build
