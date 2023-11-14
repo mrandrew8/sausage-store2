@@ -53,9 +53,9 @@ sonarqube-backend-sast:
   image: maven:3.8-openjdk-16
   script:
     - cd backend
-    - mvn --batch-mode verify sonar:sonar -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository -\
-        Dsonar.projectName=${SONAR_PROJECT_NAME_BACK} -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.login=${SONAR_LOGIN_BACK} -\
-        Dsonar.projectKey=${SONAR_PROJECT_KEY_BACK} -Dsonar.qualitygate.wait=true 
+    - mvn --batch-mode verify sonar:sonar -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository\
+        -Dsonar.projectName=${SONAR_PROJECT_NAME_BACK} -Dsonar.host.url=${SONARQUBE_URL} -Dsonar.login=${SONAR_LOGIN_BACK}\
+        -Dsonar.projectKey=${SONAR_PROJECT_KEY_BACK} -Dsonar.qualitygate.wait=true 
   needs:
     - build-backend-code-job
 
