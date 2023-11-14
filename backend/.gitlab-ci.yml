@@ -32,7 +32,23 @@ build-backend-code-job: #задача с именем build-backend-code-job
       - ${CI_PROJECT_DIR}/.m2/repository
 
 
+
+spotbugs-sast:  #задача с именем spotbugs-sast
+  variables: 
+    COMPILE: "false"
+    SAST_JAVA_VERSION: 11
+    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository # не забудьте при сборке также указывать эту папку через аргумент -Dmaven.repo.local 
+  stage: test
+  script: pwd
+  needs: 
+    - build-backend-code-job
+    
+
+
+
 sonarqube-backend-sast:
+  variables: 
+    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
   stage: test
   image: maven:3.8-openjdk-16
   script:
@@ -48,17 +64,6 @@ sonarqube-backend-sast:
     - build-backend-code-job
 
 
-
-spotbugs-sast:  #задача с именем spotbugs-sast
-  variables: 
-    COMPILE: "false"
-    SAST_JAVA_VERSION: 11
-    MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository # не забудьте при сборке также указывать эту папку через аргумент -Dmaven.repo.local 
-  stage: test
-  script: pwd
-  needs: 
-    - build-backend-code-job
-    
 
 
 telegram-notification-backend: #задача с именем telegram-notification-backend
