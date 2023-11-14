@@ -69,7 +69,7 @@ telegram-notification-backend: #задача с именем telegram-notificati
   only:
     changes:
     - backend/* #только для изменений в директории backend
-    variables: -РАСКОМЕНТИТЬ НЕ ЗАБУДЬ ЭТУ СТРОКУ И СЛЕДУЮЩУЮ!!!!!!!!!!!!
+    variables: #РАСКОМЕНТИТЬ НЕ ЗАБУДЬ ЭТУ СТРОКУ И СЛЕДУЮЩУЮ!!!!!!!!!!!!
     - $CI_COMMIT_MESSAGE =~ /send notification/ # только для изменений содержащих в сообщении коммита "send notification"
   script:
      # - echo "The BACK_CI_JOB_ID is ${CI_PROJECT_DIR}" - проверки, при помощи которых опредлял CI_PROJECT_DIR
