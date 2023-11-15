@@ -23,7 +23,7 @@ build-frontend-code-job: #задача с именем build-frontend-code-job
 sonarqube-frontend-sast:
   stage: test
   image:
-    name: sonarsource/sonar-scanner-cli:latest
+    name: sonarsource/sonar-scanner-cli:latest #образ
   script: 
     - "sonar-scaner
     -Dsonar.projectName=${SONAR_PROJECT_NAME_FRONTEND} 
