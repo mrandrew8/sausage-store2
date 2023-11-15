@@ -26,12 +26,16 @@ sonarqube-frontend-sast:
     name: sonarsource/sonar-scanner-cli:latest #образ
   script: 
     - cd frontend
+    - pwd
+    - ls -lah
     - "sonar-scanner
     -Dsonar.projectName=${SONAR_PROJECT_NAME_FRONTEND} 
     -Dsonar.host.url=${SONAR_HOST_URL_FRONTEND} 
     -Dsonar.login=${SONAR_LOGIN_FRONTEND}
-    -Dsonar.projectKey=${'SONAR_PROJECT_KEY_FRONTEND'}
+    -Dsonar.projectKey=${SONAR_PROJECT_KEY_FRONTEND}
     -Dsonar.sources=${SONAR_SOURCES_FRONTEND}"
+    - pwd
+    - ls -lah
 #    -Dsonar.qualitygate.wait=true" #ошибочно добавил
   needs:
     - build-frontend-code-job # прописываем зависимость от джоба с именем build-frontend-code-job
