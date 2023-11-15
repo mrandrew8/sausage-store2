@@ -1,6 +1,6 @@
 include:
-#    - local: backend/.gitlab-ci.yml #поделючил два файла из директорий frontend и backend
-    - local: frontend/.gitlab-ci.yml
+    - local: backend/.gitlab-ci.yml #поделючил два файла из директорий frontend и backend
+#    - local: frontend/.gitlab-ci.yml
 
 stages:
     - build
