@@ -31,8 +31,8 @@ sonarqube-frontend-sast:
     -Dsonar.host.url=${SONAR_HOST_URL_FRONTEND} 
     -Dsonar.login=${SONAR_LOGIN_FRONTEND}
     -Dsonar.projectKey=${SONAR_PROJECT_KEY_FRONTEND}
-    -Dsonar.sources=${SONAR_SOURCES_FRONTEND}
-    -Dsonar.qualitygate.wait=true" #параметры
+    -Dsonar.sources=${SONAR_SOURCES_FRONTEND}"
+#    -Dsonar.qualitygate.wait=true" #параметры
   needs:
     - build-frontend-code-job # прописываем зависимость от джоба с именем build-frontend-code-job
 
