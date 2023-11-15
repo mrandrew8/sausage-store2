@@ -1,6 +1,6 @@
 stages:
   - build #сборка
-  - test
+  - test #test
   - notify #уведомление
   
 build-frontend-code-job: #задача с именем build-frontend-code-job
