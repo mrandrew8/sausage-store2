@@ -25,6 +25,7 @@ sonarqube-frontend-sast:
   image:
     name: sonarsource/sonar-scanner-cli:latest #образ
   script: 
+    - cd frontend
     - "sonar-scaner
     -Dsonar.projectName=${SONAR_PROJECT_NAME_FRONTEND} 
     -Dsonar.host.url=${SONAR_HOST_URL_FRONTEND} 
