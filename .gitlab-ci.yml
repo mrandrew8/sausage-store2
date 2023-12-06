@@ -6,3 +6,4 @@ stages:
     - build
     - test
     - notify
+    - release
