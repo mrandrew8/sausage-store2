@@ -5,6 +5,7 @@ stages:
   - build  #сборка
   - test #test
   - notify  #уведомление
+  - release
 
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
@@ -87,3 +88,16 @@ telegram-notification-backend: #задача с именем telegram-notificati
   needs:
     - build-backend-code-job # прописываем зависимость от джоба с именем build-backend-code-job
 #добавил изменения для проверки
+
+upload-backend-release:
+  stage: release
+  only:
+    changes:
+      - backend/**/*
+  needs:
+    - build-backend-code-job
+  script:
+    - cd backend
+    - "mvn deploy -DskipTests
+   -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
+   -s settings.xml -Dversion.application=${VERSION}"
