@@ -16,9 +16,9 @@
         </repository>
     </distributionManagement>
     <groupId>com.yandex.practicum.devops</groupId>
-    <artifactId>sausage-store</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>sausage-store</name>
+    <artifactId>std-024-12-backend2</artifactId>
+    <version>${VERSION}</version>
+    <name>std-024-12-backend2</name>
     <description>Backend for sausage-store</description>
     <properties>
         <java.version>16</java.version>
