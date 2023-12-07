@@ -12,7 +12,7 @@
         <repository>
            <id>std-024-12-backend2</id>
            <name>std-024-12-backend2</name>
-           <url>${env.NEXUS_REPO_URL}/std-024-12-backend2/</url>
+           <url>${env.NEXUS_REPO_URL}/repository/std-024-12-backend2/</url>
         </repository>
     </distributionManagement>
     <groupId>com.yandex.practicum.devops</groupId>
