@@ -23,6 +23,10 @@ build-frontend-code-job: #задача с именем build-frontend-code-job
       - frontend/dist/frontend #сохранение собранного frontend как артефакта 
     reports:
       dotenv: ${CI_PROJECT_DIR}/build.env #добавил тут переменную CI_PROJECT_DIR, так как на пердыдущем шаге записал переменную в директорию CI_PROJECT_DIR
+  cache:
+    paths:
+      - .npm/
+
 
 sonarqube-frontend-sast:
   stage: test
