@@ -5,9 +5,11 @@ stages:
   - build  #сборка
   - test #test
   - notify  #уведомление
+  - release
 
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
+  VERSION: 1.0.${CI_PIPELINE_ID} # добавил перменную версия
 
 build-backend-code-job: #задача с именем build-backend-code-job
   stage: build  #этап build
@@ -16,14 +18,14 @@ build-backend-code-job: #задача с именем build-backend-code-job
     - backend/* #только для изменений в директории backend
   script:
     - cd backend
-    - mvn package
+    - "mvn package -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository -Dversion.application=${VERSION}" # добавил еще 2 параметра сюда
     - echo "PREV_JOB_ID=${CI_JOB_ID}" >> ${CI_PROJECT_DIR}/build.env #доавил тут ci_project_dir
   #  - ls -lah - выполнял проверки, дебаг
   #  - pwd - выполнял проверки, дебаг
   #  - echo "The BACK_CI_JOB_ID is ${CI_PROJECT_DIR}" - проверка, что записано в переменную
   artifacts:
     paths:
-      - backend/target/sausage-store-0.0.1-SNAPSHOT.jar  #сохранение собранного бэкенда как артефакта 
+      - backend/target/sausage-store-${VERSION}.jar  #сохранение собранного бэкенда как артефакта 
     expire_in: 1 day # указал срок хранения для артефакта
     reports:
       dotenv: ${CI_PROJECT_DIR}/build.env   #добавил тут переменную CI_PROJECT_DIR, так как на пердыдущем шаге записал переменную в директорию CI_PROJECT_DIR
@@ -85,3 +87,16 @@ telegram-notification-backend: #задача с именем telegram-notificati
   needs:
     - build-backend-code-job # прописываем зависимость от джоба с именем build-backend-code-job
 #добавил изменения для проверки
+
+upload-backend-release:
+  stage: release
+  only:
+    changes:
+      - backend/**/*
+  needs:
+    - build-backend-code-job
+  script:
+    - cd backend
+    - "mvn deploy -DskipTests
+   -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
+   -s settings.xml -Dversion.application=${VERSION}"
