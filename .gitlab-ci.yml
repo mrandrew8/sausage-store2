@@ -7,4 +7,3 @@ stages:
     - test
     - notify
     - release
-#test vscode
