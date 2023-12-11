@@ -11,7 +11,7 @@ build-frontend-code-job: #задача с именем build-frontend-code-job
   stage: build   #этап build
   only:
     changes:
-    - frontend/* #только для изменений в директории frontend
+    - frontend/**/* #только для изменений в директории frontend
 
   script: # объявление скрипта
     - cd frontend
