@@ -8,7 +8,7 @@ sudo rm -Rf /var/www-data/dist/frontend/*||true #далее удаляем ст�
 curl -u ${NEXUS_REPO_USER}:${NEXUS_REPO_PASS} -o sausage-store.tar.gz ${NEXUS_REPO_URL}/${NEXUS_REPO_FRONTEND_NAME}/${VERSION}/sausage-store-${VERSION}.tar.gz
 #здесь мы скачаваем архив sausage-store-${VERSION}.tar.gz с нексуса и сохраняем его по имени sausage-store.tar.gz. Для скачивания используем креды, которые
 #зашили в переменные в гитлабе ${NEXUS_REPO_USER}:${NEXUS_REPO_PASS}
-sudo tar -xvzf sausage-store.tar.gz -C /var/www-data/dist/frontend/||true #"<...>||true" говорит, если команда обвалится — продолжай, перекидываем 
+sudo tar -xvzf sausage-store.tar.gz --strip-components 1 -C /var/www-data/dist/frontend/||true #"<...>||true" говорит, если команда обвалится — продолжай, перекидываем 
 # распаковываем архив в  директорию, где изначально хранились файлы фронтенда
 #Обновляем конфиг systemd с помощью рестарта
 sudo systemctl daemon-reload
