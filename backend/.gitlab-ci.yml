@@ -118,11 +118,13 @@ backend-deploy:
     - chmod 644 ~/.ssh/known_hosts
   script:
      #добавляем шаг копирования unit-файла:
-    - scp ./backend/sausage-store-backend.service ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/sausage-store-backend.service
+    - scp ./backend/backend.service ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/backend.service #Этак команда отрабатывает первой на шаге деплоя
+    #Этот фрагмент кода описывает процесс передачи файла "backend.service" с текущего компьютера на удаленный компьютер, используя указанные переменные для определения пользователя и пути сохранения.
     - ssh ${DEV_USER}@${DEV_HOST} "export "CURRENT_VERSION=${VERSION}"; export "VERSION=${VERSION}"; export "DEV_HOST=${DEV_HOST}";export "NEXUS_REPO_URL=${NEXUS_REPO_URL}"; export "NEXUS_REPO_USER=${NEXUS_REPO_USER}"; export "NEXUS_REPO_PASS=${NEXUS_REPO_PASS}";setsid /bin/bash -s " < ./backend/deploy.sh
+    #В данном случае, мы экспортируем несколько переменных, которые будут использоваться в дальнейшем процессе. 
+    #Затем мы запускаем фоновый процесс bash, который будет выполнять скрипт deploy.sh, расположенный в директории backend. Это скрипт для развертывания приложения на сервере
      # скачиваем ранее собранный артефакт с Nexus. При этом необходимо заранее
      # прописать креды от Nexus в переменные в настройке пайплайна
-    - "curl -u ${NEXUS_REPO_USER}:${NEXUS_REPO_PASS}
- -o sausage-store-${VERSION}.jar ${NEXUS_REPO_URL}/${NEXUS_REPO_BACKEND_NAME}/com/yandex/practicum/devops/sausage-store/${VERSION}/sausage-store-${VERSION}.jar"
- # запускаем бэкенд  
-    - java -jar sausage-store-${VERSION}.jar & 
+    #следующий шаг у нас перенесен в deploy.sh - "curl -u ${NEXUS_REPO_USER}:${NEXUS_REPO_PASS} -o sausage-store-${VERSION}.jar ${NEXUS_REPO_URL}/${NEXUS_REPO_BACKEND_NAME}/com/yandex/practicum/devops/sausage-store/${VERSION}/sausage-store-${VERSION}.jar"
+    # запускаем бэкенд  
+    # этот шаг тоже перенесен в deploy.sh - java -jar sausage-store-${VERSION}.jar & 
