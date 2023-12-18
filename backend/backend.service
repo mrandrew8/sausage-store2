@@ -8,7 +8,7 @@ Type=exec
 User=backend
 
 Environment=REPORT_PATH=/var/sausage-store/reports
-Environment=LOG_PATH=/var/sausage-store/logs
+Environment=LOG_PATH=/opt/log/sausage-store-backend.log
 
 ExecStart=java -jar /opt/sausage-store/bin/sausage-store.jar
 
