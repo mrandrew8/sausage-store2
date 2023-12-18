@@ -8,9 +8,16 @@
         <version>2.5.0</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+    <distributionManagement>
+        <repository>
+           <id>std-024-12-backend2</id>
+           <name>std-024-12-backend2</name>
+           <url>${env.NEXUS_REPO_URL}/std-024-12-backend2/</url>
+        </repository>
+    </distributionManagement>
     <groupId>com.yandex.practicum.devops</groupId>
     <artifactId>sausage-store</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${VERSION}</version>
     <name>sausage-store</name>
     <description>Backend for sausage-store</description>
     <properties>
