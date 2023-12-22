@@ -8,9 +8,11 @@ Type=exec
 User=backend
 
 Environment=REPORT_PATH=/var/sausage-store/reports
-Environment=LOG_PATH=/opt/log/sausage-store-backend.log
+Environment=LOG_PATH=/var/sausage-store/logs
 
 ExecStart=java -jar /opt/sausage-store/bin/sausage-store.jar
+
+StandardError=file:/opt/log/sausage-store-backend.log
 
 [Install]
 WantedBy=multi-user.target
