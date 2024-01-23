@@ -20,8 +20,7 @@ build-backend-code-job: #задача с именем build-backend-code-job
     - backend/**/* #только для изменений в директории backend
   script:
     - cd backend
-    - flyway.enabled=false 
-    - "mvn package -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository -Dversion.application=${VERSION}" # добавил еще 2 параметра сюда
+    - "mvn package -Dflyway.enabled=false -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository -Dversion.application=${VERSION}" # добавил еще 2 параметра сюда
     - echo "PREV_JOB_ID=${CI_JOB_ID}" >> ${CI_PROJECT_DIR}/build.env #доавил тут ci_project_dir
   #  - ls -lah - выполнял проверки, дебаг
   #  - pwd - выполнял проверки, дебаг
