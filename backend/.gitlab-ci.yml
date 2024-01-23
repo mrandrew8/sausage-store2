@@ -58,6 +58,7 @@ sonarqube-backend-sast:
   script:
     - cd backend
     - "mvn --batch-mode verify sonar:sonar 
+    -Dspring.flyway.enabled=false
     -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
     -Dsonar.projectName=${SONAR_PROJECT_NAME_BACKEND} 
     -Dsonar.host.url=${SONARQUBE_URLBACKEND} 
