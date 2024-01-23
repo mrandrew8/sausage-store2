@@ -23,6 +23,9 @@ Environment=SPRING_DATASOURCE_PASSWORD="${PSQL_PASSWORD}"
 
 ExecStart=java -jar /opt/sausage-store/bin/sausage-store.jar
 
+StandardOutput=file:/opt/log/backend_out.log
+StandardError=file:/opt/log/sausage-store-backend.log
+
 [Install]
 WantedBy=multi-user.target
 
