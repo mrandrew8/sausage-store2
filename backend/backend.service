@@ -13,7 +13,7 @@ Environment=LOG_PATH=/var/sausage-store/logs
 Environment=PSQL_USER="std-024-12"
 Environment=PSQL_PASSWORD="Testusr1234"
 Environment=PSQL_HOST="rc1d-6ltxi07qdaaunpa5.mdb.yandexcloud.net"
-Environment=PSQL_DBNAME="std-024-24"
+Environment=PSQL_DBNAMEPSQL_DBNAME="std-024-12"
 Environment=PSQL_PORT="6432"
 
 # Параметры подключения к БД можно указать с помощью переменных окружения SPRING
