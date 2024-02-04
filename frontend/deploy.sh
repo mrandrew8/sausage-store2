@@ -1,8 +1,8 @@
 #! /bin/bash
 #Если свалится одна из команд, рухнет и весь скрипт
 set -xe
-#Перезаливаем дескриптор сервиса на ВМ для деплоя
-sudo cp -rf frontend.service /etc/systemd/system/frontend.service #тут мы перекидывай из /home/student файлик frontend.service в /etc/systemd/system
+#Перезаливаем 
+sudo cp -rf sausage-store.conf /etc/nginx/sites-enabled/sausage-store.conf #тут мы перекидывай из /home/student файлик sausage-store.conf в /etc/nginx/sites-enabled
 sudo rm -Rf /var/www-data/dist/frontend/*||true #далее удаляем старые файлы
 #Переносим артефакт в нужную папку
 curl -u ${NEXUS_REPO_USER}:${NEXUS_REPO_PASS} -o sausage-store.tar.gz ${NEXUS_REPO_URL}/${NEXUS_REPO_FRONTEND_NAME}/${VERSION}/sausage-store-${VERSION}.tar.gz
@@ -12,5 +12,7 @@ sudo tar -xvzf sausage-store.tar.gz --strip-components 1 -C /var/www-data/dist/f
 # распаковываем архив в  директорию, где изначально хранились файлы фронтенда
 #Обновляем конфиг systemd с помощью рестарта
 sudo systemctl daemon-reload
+#автозапуск включаем
+sudo systemctl enable nginx
 #Перезапускаем сервис сосисочной
-sudo systemctl restart frontend 
+sudo systemctl restart nginx
