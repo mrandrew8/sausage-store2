@@ -15,9 +15,14 @@ RUN keytool -importcert -file YandexInternalRootCA.crt \
     -alias yandex -cacerts -storepass changeit -noprompt \
     && rm -rf YandexInternalRootCA.crt \
     && addgroup --system jaruser \
-    && adduser -S -s /bin/false -G jaruser jaruser -D -H
+    && adduser -S -s /bin/false -G jaruser jaruser -D -H \
+    && mkdir -p /home/jaruser/.postgresql \
+    && chown -R jaruser:jaruser /home/jaruser/
 COPY --chown=jaruser:jaruser \
      --from=builder /usr/src/app/target/sausage-store-${VERSION}.jar ./sausage-store.jar
+COPY --chown=jaruser:jaruser \
+     --from=builder /usr/src/app/YandexInternalRootCA.crt /home/jaruser/.postgresql/root.crt
+RUN chmod 776 /home/jaruser/.postgresql/root.crt
 EXPOSE 8080
 USER jaruser
 ENTRYPOINT ["java", "-jar", "-Dmyserver.bindPort=8080", "/app/sausage-store.jar"] 
