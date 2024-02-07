@@ -23,7 +23,8 @@ variables:
 build-backend-code-job: #задача с именем build-backend-code-job
   stage: build
   only:
-    changes: backend/**/* #только для изменений в директории backend
+    changes: 
+    - backend/**/* #только для изменений в директории backend
   image:
     name: gcr.io/kaniko-project/executor:v1.9.0-debug
     entrypoint: [""]
