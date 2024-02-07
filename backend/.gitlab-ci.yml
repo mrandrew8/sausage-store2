@@ -113,8 +113,7 @@ deploy-backend:
   stage: deploy
   image: alpine:3.18
   before_script:
-    - apt-get upadte
-    - apt-get install gettext-base
+    - apt add gettext
     - apk add openssh-client bash
     - eval $(ssh-agent -s)
     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
