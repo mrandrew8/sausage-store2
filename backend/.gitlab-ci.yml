@@ -8,32 +8,58 @@ stages:
   - release
   - deploy
 
+cache:
+  paths:
+    - ${CI_PROJECT_DIR}/.m2/repository
+
 variables:
   MAVEN_OPTS: "-Dmaven.repo.local=$CI_PROJECT_DIR/.m2/repository"
   VERSION: 1.0.${CI_PIPELINE_ID} # добавил перменную версия
+  MAVEN_REPO_PATH: ${CI_PROJECT_DIR}/.m2/repository
   JAVA_OPTS: -XX:MaxRAMPercentage=90 # для того, чтобы Maven не съел всю свободную оперативку
 
+
+
 build-backend-code-job: #задача с именем build-backend-code-job
-  stage: build  #этап build
-  only: 
-    changes:
-    - backend/**/* #только для изменений в директории backend
-  script:
-    - cd backend
-    - "mvn package -Dspring.flyway.enabled=false -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository -Dversion.application=${VERSION}" # добавил еще 2 параметра сюда
-    - echo "PREV_JOB_ID=${CI_JOB_ID}" >> ${CI_PROJECT_DIR}/build.env #доавил тут ci_project_dir
-  #  - ls -lah - выполнял проверки, дебаг
-  #  - pwd - выполнял проверки, дебаг
-  #  - echo "The BACK_CI_JOB_ID is ${CI_PROJECT_DIR}" - проверка, что записано в переменную
-  artifacts:
-    paths:
-      - backend/target/sausage-store-${VERSION}.jar  #сохранение собранного бэкенда как артефакта 
-    expire_in: 1 day # указал срок хранения для артефакта
-    reports:
-      dotenv: ${CI_PROJECT_DIR}/build.env   #добавил тут переменную CI_PROJECT_DIR, так как на пердыдущем шаге записал переменную в директорию CI_PROJECT_DIR
-  cache:
-    paths:
-      - ${CI_PROJECT_DIR}/.m2/repository
+  stage: build
+  only:
+    changes: backend/**/* #только для изменений в директории backend
+  image:
+    name: gcr.io/kaniko-project/executor:v1.9.0-debug
+    entrypoint: [""]
+  # переменные CI_REGISTRY_USER, CI_REGISTRY_PASSWORD, CI_REGISTRY генерятся Гитлабом, их задавать не надо
+  script: 
+    - echo "test"
+    - /kaniko/executor
+      --context "${CI_PROJECT_DIR}/backend"
+      --dockerfile "${CI_PROJECT_DIR}/backend/Dockerfile"
+      --destination "${CI_REGISTRY_IMAGE}/sausage-backend:$CI_COMMIT_SHA"
+      --build-arg VERSION=$VERSION
+      --cache=true
+    - echo "$CI_REGISTRY_IMAGE"
+
+# Старая сборка тоже не нужна
+# build-backend-code-job: #задача с именем build-backend-code-job
+#   stage: build  #этап build
+#   only: 
+#     changes:
+#     - backend/**/* #только для изменений в директории backend
+#   script:
+#     - cd backend
+#     - "mvn package -Dspring.flyway.enabled=false -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository -Dversion.application=${VERSION}" # добавил еще 2 параметра сюда
+#     - echo "PREV_JOB_ID=${CI_JOB_ID}" >> ${CI_PROJECT_DIR}/build.env #доавил тут ci_project_dir
+#   #  - ls -lah - выполнял проверки, дебаг
+#   #  - pwd - выполнял проверки, дебаг
+#   #  - echo "The BACK_CI_JOB_ID is ${CI_PROJECT_DIR}" - проверка, что записано в переменную
+#   artifacts:
+#     paths:
+#       - backend/target/sausage-store-${VERSION}.jar  #сохранение собранного бэкенда как артефакта 
+#     expire_in: 1 day # указал срок хранения для артефакта
+#     reports:
+#       dotenv: ${CI_PROJECT_DIR}/build.env   #добавил тут переменную CI_PROJECT_DIR, так как на пердыдущем шаге записал переменную в директорию CI_PROJECT_DIR
+#   cache:
+#     paths:
+#       - ${CI_PROJECT_DIR}/.m2/repository
 
 
 
@@ -69,6 +95,21 @@ sonarqube-backend-sast:
     - build-backend-code-job
 
 
+release:
+  variables:
+    GIT_STRATEGY: none
+  image:
+    name: gcr.io/go-containerregistry/crane:debug
+    entrypoint: [ "" ]
+  cache: [ ]
+  stage: release
+  before_script:
+    - crane auth login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+  script:
+    - crane tag $CI_REGISTRY_IMAGE/sausage-backend:$CI_COMMIT_SHA latest
+
+
+
 
 
 telegram-notification-backend: #задача с именем telegram-notification-backend
@@ -91,44 +132,52 @@ telegram-notification-backend: #задача с именем telegram-notificati
     - build-backend-code-job # прописываем зависимость от джоба с именем build-backend-code-job
 #добавил изменения для проверки
 
-upload-backend-release:
-  stage: release
-  only:
-    changes:
-      - backend/**/*
-  needs:
-    - build-backend-code-job
-  script:
-    - cd backend
-    - "mvn deploy -DskipTests
-   -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
-   -s settings.xml -Dversion.application=${VERSION}"
 
 
-backend-deploy:
-  stage: deploy
-  environment:
-    name: staging
-    url: http://std-024-12.praktikum-services.tech/ 
-  before_script:
-    #устанавливаем ssh-agent для удобства аутентификации по ssh
-    - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
-    - eval $(ssh-agent -s) #запускаем ssh агент для текущей оболчки
-    #сохраняем сгенеренный ранее приватный ключ для раннера
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - #добавление приватного ключа
-    - mkdir -p ~/.ssh
-    - chmod 600 ~/.ssh
-    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
-  script:
-     #добавляем шаг копирования unit-файла:
-    - scp ./backend/backend.service ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/backend.service #Этак команда отрабатывает первой на шаге деплоя
-    #Этот фрагмент кода описывает процесс передачи файла "backend.service" с текущего компьютера на удаленный компьютер, используя указанные переменные для определения пользователя и пути сохранения.
-    - ssh ${DEV_USER}@${DEV_HOST} "export "CURRENT_VERSION=${VERSION}"; export "VERSION=${VERSION}"; export "DEV_HOST=${DEV_HOST}";export "NEXUS_REPO_URL=${NEXUS_REPO_URL}"; export "NEXUS_REPO_USER=${NEXUS_REPO_USER}"; export "NEXUS_REPO_BACKEND_NAME=${NEXUS_REPO_BACKEND_NAME}"; export "NEXUS_REPO_PASS=${NEXUS_REPO_PASS}";setsid /bin/bash -s " < ./backend/deploy.sh
-    #В данном случае, мы экспортируем несколько переменных, которые будут использоваться в дальнейшем процессе. 
-    #Затем мы запускаем фоновый процесс bash, который будет выполнять скрипт deploy.sh, расположенный в директории backend. Это скрипт для развертывания приложения на сервере
-     # скачиваем ранее собранный артефакт с Nexus. При этом необходимо заранее
-     # прописать креды от Nexus в переменные в настройке пайплайна
-    #следующий шаг у нас перенесен в deploy.sh - "curl -u ${NEXUS_REPO_USER}:${NEXUS_REPO_PASS} -o sausage-store-${VERSION}.jar ${NEXUS_REPO_URL}/${NEXUS_REPO_BACKEND_NAME}/com/yandex/practicum/devops/sausage-store/${VERSION}/sausage-store-${VERSION}.jar"
-    # запускаем бэкенд  
-    # этот шаг тоже перенесен в deploy.sh - java -jar sausage-store-${VERSION}.jar & 
+
+
+
+
+
+# Закоментим старый джоб загрузки, т. к. у нас тепе
+# upload-backend-release:
+#   stage: release
+#   only:
+#     changes:
+#       - backend/**/*
+#   needs:
+#     - build-backend-code-job
+#   script:
+#     - cd backend
+#     - "mvn deploy -DskipTests
+#    -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
+#    -s settings.xml -Dversion.application=${VERSION}"
+
+# Закоментил старый джоб, теперь у нас этот стейдж через докер
+# backend-deploy:
+#   stage: deploy
+#   environment:
+#     name: staging
+#     url: http://std-024-12.praktikum-services.tech/ 
+#   before_script:
+#     #устанавливаем ssh-agent для удобства аутентификации по ssh
+#     - 'command -v ssh-agent >/dev/null || ( apt-get update -y && apt-get install openssh-client -y )'
+#     - eval $(ssh-agent -s) #запускаем ssh агент для текущей оболчки
+#     #сохраняем сгенеренный ранее приватный ключ для раннера
+#     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - #добавление приватного ключа
+#     - mkdir -p ~/.ssh
+#     - chmod 600 ~/.ssh
+#     - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+#     - chmod 644 ~/.ssh/known_hosts
+#   script:
+#      #добавляем шаг копирования unit-файла:
+#     - scp ./backend/backend.service ${DEV_USER}@${DEV_HOST}:/home/${DEV_USER}/backend.service #Этак команда отрабатывает первой на шаге деплоя
+#     #Этот фрагмент кода описывает процесс передачи файла "backend.service" с текущего компьютера на удаленный компьютер, используя указанные переменные для определения пользователя и пути сохранения.
+#     - ssh ${DEV_USER}@${DEV_HOST} "export "CURRENT_VERSION=${VERSION}"; export "VERSION=${VERSION}"; export "DEV_HOST=${DEV_HOST}";export "NEXUS_REPO_URL=${NEXUS_REPO_URL}"; export "NEXUS_REPO_USER=${NEXUS_REPO_USER}"; export "NEXUS_REPO_BACKEND_NAME=${NEXUS_REPO_BACKEND_NAME}"; export "NEXUS_REPO_PASS=${NEXUS_REPO_PASS}";setsid /bin/bash -s " < ./backend/deploy.sh
+#     #В данном случае, мы экспортируем несколько переменных, которые будут использоваться в дальнейшем процессе. 
+#     #Затем мы запускаем фоновый процесс bash, который будет выполнять скрипт deploy.sh, расположенный в директории backend. Это скрипт для развертывания приложения на сервере
+#      # скачиваем ранее собранный артефакт с Nexus. При этом необходимо заранее
+#      # прописать креды от Nexus в переменные в настройке пайплайна
+#     #следующий шаг у нас перенесен в deploy.sh - "curl -u ${NEXUS_REPO_USER}:${NEXUS_REPO_PASS} -o sausage-store-${VERSION}.jar ${NEXUS_REPO_URL}/${NEXUS_REPO_BACKEND_NAME}/com/yandex/practicum/devops/sausage-store/${VERSION}/sausage-store-${VERSION}.jar"
+#     # запускаем бэкенд  
+#     # этот шаг тоже перенесен в deploy.sh - java -jar sausage-store-${VERSION}.jar & 
