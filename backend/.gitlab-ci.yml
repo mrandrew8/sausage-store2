@@ -123,9 +123,8 @@ deploy-backend:
     - chmod 644 ~/.ssh/known_hosts
 # подставим переменные в скрипт deploy.sh и выполним его на целевом хосте, где развернем сосисочный бэкенд
   script:    
-    - envsubst < ./backend/deploy.sh|ssh ${DEPLOY_USER}@${DEPLOY_HOST} 
-    - echo "$VERSION"
-
+    - envsubst < ./backend/deploy.sh|ssh ${DEV_USER}@${DEV_HOST} 
+  
 
 telegram-notification-backend: #задача с именем telegram-notification-backend
   variables:
