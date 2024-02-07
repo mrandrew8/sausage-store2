@@ -4,7 +4,8 @@ set -xe
 sudo docker login -u ${CI_REGISTRY_USER} -p${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
 sudo docker network create -d bridge sausage_network || true
 sudo docker rm -f sausage-backend || true
-sudo docker run -d --name sausage-backend \ # пока что убрал --rm, чтоб мониторить работу контейнера
+sudo docker run -d --name sausage-backend \ 
+#пока что убрал rm, чтоб мониторить работу контейнера
      --env SPRING_DATASOURCE_URL="${SPRING_DATASOURCE_URL}" \
      --env SPRING_DATASOURCE_USERNAME="${SPRING_DATASOURCE_USERNAME}" \
      --env SPRING_DATASOURCE_PASSWORD="${SPRING_DATASOURCE_PASSWORD}" \
