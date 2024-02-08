@@ -39,28 +39,28 @@ build-backend-code-job: #задача с именем build-backend-code-job
       --cache=true
     - echo "$CI_REGISTRY_IMAGE"
 
-# Старая сборка тоже не нужна
-# build-backend-code-job: #задача с именем build-backend-code-job
-#   stage: build  #этап build
-#   only: 
-#     changes:
-#     - backend/**/* #только для изменений в директории backend
-#   script:
-#     - cd backend
-#     - "mvn package -Dspring.flyway.enabled=false -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository -Dversion.application=${VERSION}" # добавил еще 2 параметра сюда
-#     - echo "PREV_JOB_ID=${CI_JOB_ID}" >> ${CI_PROJECT_DIR}/build.env #доавил тут ci_project_dir
-#   #  - ls -lah - выполнял проверки, дебаг
-#   #  - pwd - выполнял проверки, дебаг
-#   #  - echo "The BACK_CI_JOB_ID is ${CI_PROJECT_DIR}" - проверка, что записано в переменную
-#   artifacts:
-#     paths:
-#       - backend/target/sausage-store-${VERSION}.jar  #сохранение собранного бэкенда как артефакта 
-#     expire_in: 1 day # указал срок хранения для артефакта
-#     reports:
-#       dotenv: ${CI_PROJECT_DIR}/build.env   #добавил тут переменную CI_PROJECT_DIR, так как на пердыдущем шаге записал переменную в директорию CI_PROJECT_DIR
-#   cache:
-#     paths:
-#       - ${CI_PROJECT_DIR}/.m2/repository
+Старая сборка тоже не нужна
+build-backend-code-job: #задача с именем build-backend-code-job
+  stage: build  #этап build
+  only: 
+    changes:
+    - backend/**/* #только для изменений в директории backend
+  script:
+    - cd backend
+    - "mvn package -Dmaven.test.skip=true -Dspring.flyway.enabled=false -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository -Dversion.application=${VERSION}" # добавил еще 2 параметра сюда
+    - echo "PREV_JOB_ID=${CI_JOB_ID}" >> ${CI_PROJECT_DIR}/build.env #доавил тут ci_project_dir
+  #  - ls -lah - выполнял проверки, дебаг
+  #  - pwd - выполнял проверки, дебаг
+  #  - echo "The BACK_CI_JOB_ID is ${CI_PROJECT_DIR}" - проверка, что записано в переменную
+  artifacts:
+    paths:
+      - backend/target/sausage-store-${VERSION}.jar  #сохранение собранного бэкенда как артефакта 
+    expire_in: 1 day # указал срок хранения для артефакта
+    reports:
+      dotenv: ${CI_PROJECT_DIR}/build.env   #добавил тут переменную CI_PROJECT_DIR, так как на пердыдущем шаге записал переменную в директорию CI_PROJECT_DIR
+  cache:
+    paths:
+      - ${CI_PROJECT_DIR}/.m2/repository
 
 
 
@@ -154,19 +154,19 @@ telegram-notification-backend: #задача с именем telegram-notificati
 
 
 
-# Закоментим старый джоб загрузки, т. к. у нас тепе
-# upload-backend-release:
-#   stage: release
-#   only:
-#     changes:
-#       - backend/**/*
-#   needs:
-#     - build-backend-code-job
-#   script:
-#     - cd backend
-#     - "mvn deploy -DskipTests
-#    -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
-#    -s settings.xml -Dversion.application=${VERSION}"
+Закоментим старый джоб загрузки, т. к. у нас тепе
+upload-backend-release:
+  stage: release
+  only:
+    changes:
+      - backend/**/*
+  needs:
+    - build-backend-code-job
+  script:
+    - cd backend
+    - "mvn deploy -DskipTests
+   -Dmaven.repo.local=${CI_PROJECT_DIR}/.m2/repository
+   -s settings.xml -Dversion.application=${VERSION}"
 
 # Закоментил старый джоб, теперь у нас этот стейдж через докер
 # backend-deploy:
