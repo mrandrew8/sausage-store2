@@ -9,6 +9,7 @@ sudo docker run -d --name sausage-backend --env SPRING_DATASOURCE_URL="${SPRING_
      --env SPRING_DATASOURCE_PASSWORD="${SPRING_DATASOURCE_PASSWORD}" \
      --env SPRING_DATA_MONGODB_URI="${SPRING_DATA_MONGODB_URI}" \
      --network=sausage_network \
+     --restart=always \
      "${CI_REGISTRY_IMAGE}"/sausage-backend:latest 
 
 #пока что убрал rm, чтоб мониторить работу контейнера
