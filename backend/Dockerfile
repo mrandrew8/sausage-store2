@@ -22,8 +22,8 @@ RUN keytool -importcert -file YandexInternalRootCA.crt \
     && chmod 600 /app/logs \
     && chmod 600 /app/report \
     && chown -R jaruser:jaruser /home/jaruser /app/report /app/logs
-ENV REPORT_PATH="/app/report"
-ENV LOG_PATH="/app/log"
+ENV REPORT_PATH=/app/report
+ENV LOG_PATH=/app/log
 COPY --chown=jaruser:jaruser \
      --from=builder /usr/src/app/target/sausage-store-${VERSION}.jar ./sausage-store.jar
 COPY --chown=jaruser:jaruser \
