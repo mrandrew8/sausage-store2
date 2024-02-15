@@ -18,7 +18,7 @@ RUN keytool -importcert -file YandexInternalRootCA.crt \
     && adduser -S -s /bin/false -G jaruser jaruser -D -H \
     && mkdir -p /home/jaruser/.postgresql \
     && mkdir -p /app/report \
-    && mkdir -p /app/log \
+    && mkdir -p /app/logs \
     && Chmod 600 /app/logs \
     && Chmod 600 /app/report \
     && chown -R jaruser:jaruser /home/jaruser /app/report /app/logs
