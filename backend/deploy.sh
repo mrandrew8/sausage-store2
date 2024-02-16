@@ -11,7 +11,7 @@ export SPRING_DATA_MONGODB_URI=${SPRING_DATA_MONGODB_URI}
 docker login -u ${CI_REGISTRY_USER} -p${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
 docker network create -d bridge sausage_network || true
 pwd
-cd /var/lib/sausage-store2|| true
+cd /home/student/sausage-store2|| true
 docker-compose rm -s -f backend || true
 docker-compose up -d backend
 #docker-compose up -d sausage-backend
