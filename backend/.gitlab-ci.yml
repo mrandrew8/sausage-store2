@@ -126,6 +126,8 @@ deploy-backend:
   script:    
     - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/${CI_PROJECT_DIR}"
     - scp docker-compose.yml ${DEV_USER}@${DEV_HOST}:/home/student/${CI_PROJECT_DIR}/docker-compose.yml
+    - cd /home/student/${CI_PROJECT_DIR}
+    - pwd
     - envsubst < ./backend/deploy.sh|ssh ${DEV_USER}@${DEV_HOST} 
   
 
