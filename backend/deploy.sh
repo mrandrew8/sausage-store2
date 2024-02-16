@@ -3,14 +3,17 @@
 set -xe
 sudo docker login -u ${CI_REGISTRY_USER} -p${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
 sudo docker network create -d bridge sausage_network || true
-sudo docker rm -f sausage-backend || true
-sudo docker run -d --name sausage-backend --env SPRING_DATASOURCE_URL="${SPRING_DATASOURCE_URL}" \
-     --env SPRING_DATASOURCE_USERNAME="${SPRING_DATASOURCE_USERNAME}" \
-     --env SPRING_DATASOURCE_PASSWORD="${SPRING_DATASOURCE_PASSWORD}" \
-     --env SPRING_DATA_MONGODB_URI="${SPRING_DATA_MONGODB_URI}" \
-     --network=sausage_network \
-     --restart=always \
-     "${CI_REGISTRY_IMAGE}"/sausage-backend:latest 
+sudo docker-compose rm -s -f sausage-backend || true
+sudo docker-compose up -d sausage-backend
+
+#будеме переделывать эту часть
+# sudo docker run -d --name sausage-backend --env SPRING_DATASOURCE_URL="${SPRING_DATASOURCE_URL}" \
+#      --env SPRING_DATASOURCE_USERNAME="${SPRING_DATASOURCE_USERNAME}" \
+#      --env SPRING_DATASOURCE_PASSWORD="${SPRING_DATASOURCE_PASSWORD}" \
+#      --env SPRING_DATA_MONGODB_URI="${SPRING_DATA_MONGODB_URI}" \
+#      --network=sausage_network \
+#      --restart=always \
+#      "${CI_REGISTRY_IMAGE}"/sausage-backend:latest 
 
 #пока что убрал rm, чтоб мониторить работу контейнера
 # Старый код
