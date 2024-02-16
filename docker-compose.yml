@@ -26,7 +26,7 @@ services:
     image: gitlab.praktikum-services.ru:5050/std-024-12/sausage-store2/frontend:${FRONTEND_VERSION}
     container_name: sausage-store-frontend
     ports:
-      - "80:80"
+      - "8080:80"
     networks:
       - sausage-store
 

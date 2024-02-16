@@ -19,8 +19,8 @@ RUN keytool -importcert -file YandexInternalRootCA.crt \
     && mkdir -p /home/jaruser/.postgresql \
     && mkdir -p /app/report \
     && mkdir -p /app/logs \
-    && chmod 600 /app/logs \
-    && chmod 600 /app/report \
+    && chmod 777 /app/logs \
+    && chmod 777 /app/report \
     && chown -R jaruser:jaruser /home/jaruser /app/report /app/logs
 ENV REPORT_PATH=/app/report
 ENV LOG_PATH=/app/log
