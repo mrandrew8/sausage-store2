@@ -14,6 +14,7 @@ export REPORTS_MONGODB_URI=${REPORTS_MONGODB_URI}
 export FRONTEND_VERSION=${FRONTEND_VERSION}
 docker login -u ${CI_REGISTRY_USER} -p${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
 docker network create -d bridge sausage_network || true
+echo ${REPORTS_MONGODB_URI}
 pwd
 cd /home/student/sausage-store2|| true
 docker-compose rm -s -f backend || true
