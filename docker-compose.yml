@@ -14,10 +14,10 @@ services:
     networks:
       - sausage-store
   backend-report:
-    build:
-      context: backend-report
-      dockerfile: Dockerfile
-    #image: gitlab.praktikum-services.ru:5050/std-024-12/sausage-store2/backend-report:${BACKEND_REPORT_VERSION}
+    # build:
+    #   context: backend-report
+    #   dockerfile: Dockerfile
+    image: gitlab.praktikum-services.ru:5050/std-024-12/sausage-store2/backend-report:${BACKEND_REPORT_VERSION}
     container_name: sausage-backend-report
     environment:
       DB: ${REPORTS_MONGODB_URI}

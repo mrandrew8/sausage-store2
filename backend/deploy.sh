@@ -1,12 +1,20 @@
 #! /bin/bash
 #Если свалится одна из команд, рухнет и весь скрипт
 set -xe
-sudo docker login -u ${CI_REGISTRY_USER} -p${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
-sudo docker network create -d bridge sausage_network || true
+export SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+export SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+export SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+export SPRING_DATASOURCE_HOST=${SPRING_DATASOURCE_HOST}
+export SPRING_DATASOURCE_PORT=${SPRING_DATASOURCE_PORT}
+export SPRING_DATASOURCE_DATABASE=${SPRING_DATASOURCE_DATABASE}
+export SPRING_DATA_MONGODB_URI=${SPRING_DATA_MONGODB_URI}
+docker login -u ${CI_REGISTRY_USER} -p${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+docker network create -d bridge sausage_network || true
 pwd
-cd /home/student/sausage-backend|| true
+cd /var/lib/sausage-store2|| true
 docker-compose rm -s -f backend || true
-docker-compose up -d sausage-backend
+docker-compose up -d backend
+#docker-compose up -d sausage-backend
 
 #будеме переделывать эту часть
 # sudo docker run -d --name sausage-backend --env SPRING_DATASOURCE_URL="${SPRING_DATASOURCE_URL}" \
