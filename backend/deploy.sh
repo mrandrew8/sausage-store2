@@ -3,6 +3,7 @@
 set -xe
 sudo docker login -u ${CI_REGISTRY_USER} -p${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
 sudo docker network create -d bridge sausage_network || true
+pwd
 cd /home/student/sausage-backend|| true
 docker-compose rm -s -f backend || true
 docker-compose up -d sausage-backend
