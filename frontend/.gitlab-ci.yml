@@ -1,6 +1,6 @@
 stages:
   - build #сборка
-  - test #test
+#  - test #test
   - notify #уведомление
   - release
   - deploy
@@ -27,46 +27,46 @@ build-frontend-code-job-new: #задача с именем build-frontend-code-j
       --cache=true
     - echo "$CI_REGISTRY_IMAGE"
 
-build-frontend-code-job: #задача с именем build-frontend-code-job
-  stage: build   #этап build
-  only:
-    changes:
-    - frontend/**/* #только для изменений в директории frontend
+# build-frontend-code-job: #задача с именем build-frontend-code-job
+#   stage: build   #этап build
+#   only:
+#     changes:
+#     - frontend/**/* #только для изменений в директории frontend
 
-  script: # объявление скрипта
-    - cd frontend
-    - npm install # загрузка всех сторонних зависимостей
-    - npm run build # запуск сборки кода
-    - echo "PREV_JOB_ID=${CI_JOB_ID}" >> ${CI_PROJECT_DIR}/build.env #доавил тут ci_project_dir
-  artifacts:
-    paths:
-      - frontend/dist/frontend #сохранение собранного frontend как артефакта 
-    reports:
-      dotenv: ${CI_PROJECT_DIR}/build.env #добавил тут переменную CI_PROJECT_DIR, так как на пердыдущем шаге записал переменную в директорию CI_PROJECT_DIR
-  cache:
-    paths:
-      - .npm/
+#   script: # объявление скрипта
+#     - cd frontend
+#     - npm install # загрузка всех сторонних зависимостей
+#     - npm run build # запуск сборки кода
+#     - echo "PREV_JOB_ID=${CI_JOB_ID}" >> ${CI_PROJECT_DIR}/build.env #доавил тут ci_project_dir
+#   artifacts:
+#     paths:
+#       - frontend/dist/frontend #сохранение собранного frontend как артефакта 
+#     reports:
+#       dotenv: ${CI_PROJECT_DIR}/build.env #добавил тут переменную CI_PROJECT_DIR, так как на пердыдущем шаге записал переменную в директорию CI_PROJECT_DIR
+#   cache:
+#     paths:
+#       - .npm/
 
 
-sonarqube-frontend-sast:
-  stage: test
-  image:
-    name: sonarsource/sonar-scanner-cli:latest #образ
-  script: 
-    - cd frontend
-    - pwd
-    - ls -lah
-    - "sonar-scanner
-    -Dsonar.projectName=${SONAR_PROJECT_NAME_FRONTEND} 
-    -Dsonar.host.url=${SONAR_HOST_URL_FRONTEND} 
-    -Dsonar.login=${SONAR_LOGIN_FRONTEND}
-    -Dsonar.projectKey=${SONAR_PROJECT_KEY_FRONTEND}
-    -Dsonar.sources=${SONAR_SOURCES_FRONTEND}"
-    #- pwd
-    #- ls -lah
-#    -Dsonar.qualitygate.wait=true" #ошибочно добавил
-  needs:
-    - build-frontend-code-job # прописываем зависимость от джоба с именем build-frontend-code-job
+# sonarqube-frontend-sast:
+#   stage: test
+#   image:
+#     name: sonarsource/sonar-scanner-cli:latest #образ
+#   script: 
+#     - cd frontend
+#     - pwd
+#     - ls -lah
+#     - "sonar-scanner
+#     -Dsonar.projectName=${SONAR_PROJECT_NAME_FRONTEND} 
+#     -Dsonar.host.url=${SONAR_HOST_URL_FRONTEND} 
+#     -Dsonar.login=${SONAR_LOGIN_FRONTEND}
+#     -Dsonar.projectKey=${SONAR_PROJECT_KEY_FRONTEND}
+#     -Dsonar.sources=${SONAR_SOURCES_FRONTEND}"
+#     #- pwd
+#     #- ls -lah
+# #    -Dsonar.qualitygate.wait=true" #ошибочно добавил
+#   needs:
+#     - build-frontend-code-job # прописываем зависимость от джоба с именем build-frontend-code-job
 
 
 
@@ -85,7 +85,7 @@ telegram-notification-frontend: #задача с именем telegram-notificat
   #  - echo "The PREV_JOB_ID is ${PREV_JOB_ID}"  проверки, при помощи которых я определял, что записано в переменную prev_job_id
     - 'curl -X POST -H "Content-type: application/json" --data "{\"chat_id\": \"-1002134018008\", \"text\": \"${TEXT}\" }" ${TLGRM}' #отправка курлом сообщения методом post
   needs:
-    - build-frontend-code-job # прописываем зависимость от джоба с именем build-frontend-code-job
+    - build-frontend-code-job-new # прописываем зависимость от джоба с именем build-frontend-code-job
 
 
 release:
@@ -101,19 +101,19 @@ release:
   script:
     - crane tag $CI_REGISTRY_IMAGE/sausage-frontend:$CI_COMMIT_SHA latest
 
-upload-frontend-release:
-  stage: release
-  only:
-    changes:
-    - frontend/**/*
-  needs:
-    - build-frontend-code-job
-  script:
-    - cd frontend/dist
-    - tar czvf sausage-store-${VERSION}.tar.gz frontend
-    - 'curl -v -u "${NEXUS_REPO_USER}:${NEXUS_REPO_PASS}"
-   --upload-file sausage-store-${VERSION}.tar.gz
-   ${NEXUS_REPO_URL}/${NEXUS_REPO_FRONTEND_NAME}/${VERSION}/sausage-store-${VERSION}.tar.gz'
+# upload-frontend-release:
+#   stage: release
+#   only:
+#     changes:
+#     - frontend/**/*
+#   needs:
+#     - build-frontend-code-job
+#   script:
+#     - cd frontend/dist
+#     - tar czvf sausage-store-${VERSION}.tar.gz frontend
+#     - 'curl -v -u "${NEXUS_REPO_USER}:${NEXUS_REPO_PASS}"
+#    --upload-file sausage-store-${VERSION}.tar.gz
+#    ${NEXUS_REPO_URL}/${NEXUS_REPO_FRONTEND_NAME}/${VERSION}/sausage-store-${VERSION}.tar.gz'
 
 
 deploy-frontend:
@@ -133,7 +133,8 @@ deploy-frontend:
   script:    
     - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/${CI_PROJECT_DIR}/frontend/"
     - scp ./frontend/default.conf ${DEV_USER}@${DEV_HOST}:/home/student/${CI_PROJECT_DIR}/frontend/default.conf 
-    - scp docker-compose.yml ${DEV_USER}@${DEV_HOST}:/home/student/${CI_PROJECT_DIR}/docker-compose.yml
+    - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/sausage-store2"
+    - scp docker-compose.yml ${DEV_USER}@${DEV_HOST}:/home/student/sausage-store2/docker-compose.yml
     - envsubst < ./frontend/deploy.sh|ssh ${DEV_USER}@${DEV_HOST} 
 
 

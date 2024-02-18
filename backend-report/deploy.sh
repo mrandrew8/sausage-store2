@@ -1,7 +1,22 @@
 #! /bin/bash
 #Если свалится одна из команд, рухнет и весь скрипт
 set -xe
-sudo docker login -u ${CI_REGISTRY_USER} -p${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
-sudo docker network create -d bridge sausage_network || true
-sudo docker-compose rm -s -f sausage-backend-report || true
-sudo docker-compose up -d sausage-backend-report
+export SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+export SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+export SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+export SPRING_DATASOURCE_HOST=${SPRING_DATASOURCE_HOST}
+export SPRING_DATASOURCE_PORT=${SPRING_DATASOURCE_PORT}
+export SPRING_DATASOURCE_DATABASE=${SPRING_DATASOURCE_DATABASE}
+export SPRING_DATA_MONGODB_URI=${SPRING_DATA_MONGODB_URI}
+export BACKEND_VERSION=${BACKEND_VERSION}
+export BACKEND_REPORT_VERSION=${BACKEND_REPORT_VERSION}
+export REPORTS_MONGODB_URI=${REPORTS_MONGODB_URI}
+export FRONTEND_VERSION=${FRONTEND_VERSION}
+docker login -u ${CI_REGISTRY_USER} -p${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+echo ${BACKEND_REPORT_VERSION}
+docker network create -d bridge sausage_network || true
+echo ${REPORTS_MONGODB_URI}
+cd /home/student/sausage-store2|| true
+pwd
+docker-compose rm -s -f backend-report || true
+docker-compose up -d backend-report
