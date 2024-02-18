@@ -19,8 +19,4 @@ pwd
 docker-compose rm -s -f frontend || true
 docker-compose up -d frontend
 
-#эту часть убираем
-# sudo docker run -d --name sausage-frontend --network=sausage_network \
-#      --restart=always -v "/home/student/${CI_PROJECT_DIR}/frontend/default.conf:/etc/nginx/conf.d/default.conf" -p 8080:80 \
-#      "${CI_REGISTRY_IMAGE}"/sausage-frontend:latest 
 
