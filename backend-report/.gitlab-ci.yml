@@ -204,7 +204,4 @@ telegram-notification-backend: #задача с именем telegram-notificati
     - build-backend-report-code-job # прописываем зависимость от джоба с именем build-backend-code-job
 #добавил изменения для проверки
 
-:
-    - build-backend-report-code-job # прописываем зависимость от джоба с именем build-backend-code-job
-#добавил изменения для проверки
 
