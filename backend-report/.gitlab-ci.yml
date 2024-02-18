@@ -44,7 +44,7 @@ backend-report-test:  #задача с именем backend-report-test
     - pip install -r requirements.txt
     - python3 -m unittest
   needs: 
-    - build-backend-code-job
+    - build-backend-report-code-job
     
 
 
