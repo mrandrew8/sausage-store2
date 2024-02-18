@@ -139,6 +139,7 @@ build-backend-report-code-job: #задача с именем build-backend-repor
 
 backend-report-test:  #задача с именем backend-report-test
   stage: test
+  image: python:3
   script: 
     - pwd
     - cd backend-report
