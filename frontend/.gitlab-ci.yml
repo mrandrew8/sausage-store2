@@ -131,8 +131,8 @@ deploy-frontend:
     - chmod 644 ~/.ssh/known_hosts
 # подставим переменные в скрипт deploy.sh и выполним его на целевом хосте, где развернем сосисочный бэкенд
   script:    
-    - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/${CI_PROJECT_DIR}/frontend/"
-    - scp ./frontend/default.conf ${DEV_USER}@${DEV_HOST}:/home/student/${CI_PROJECT_DIR}/frontend/default.conf 
+#    - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/${CI_PROJECT_DIR}/frontend/"
+#    - scp ./frontend/default.conf ${DEV_USER}@${DEV_HOST}:/home/student/${CI_PROJECT_DIR}/frontend/default.conf 
     - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/sausage-store2"
     - scp docker-compose.yml ${DEV_USER}@${DEV_HOST}:/home/student/sausage-store2/docker-compose.yml
     - envsubst < ./frontend/deploy.sh|ssh ${DEV_USER}@${DEV_HOST} 
