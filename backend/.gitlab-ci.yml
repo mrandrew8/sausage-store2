@@ -4,7 +4,7 @@ include:
 stages: 
   - build  #сборка
   - test #test
-  - notify  #уведомление
+  - notify  #уведомление1
   - release
   - deploy
 
@@ -124,6 +124,8 @@ deploy-backend:
     - chmod 644 ~/.ssh/known_hosts
 # подставим переменные в скрипт deploy.sh и выполним его на целевом хосте, где развернем сосисочный бэкенд
   script:    
+    - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/sausage-store2"
+    - scp docker-compose.yml ${DEV_USER}@${DEV_HOST}:/home/student/sausage-store2/docker-compose.yml
     - envsubst < ./backend/deploy.sh|ssh ${DEV_USER}@${DEV_HOST} 
   
 

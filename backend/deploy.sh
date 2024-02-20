@@ -1,16 +1,35 @@
 #! /bin/bash
 #Если свалится одна из команд, рухнет и весь скрипт
 set -xe
-sudo docker login -u ${CI_REGISTRY_USER} -p${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
-sudo docker network create -d bridge sausage_network || true
-sudo docker rm -f sausage-backend || true
-sudo docker run -d --name sausage-backend --env SPRING_DATASOURCE_URL="${SPRING_DATASOURCE_URL}" \
-     --env SPRING_DATASOURCE_USERNAME="${SPRING_DATASOURCE_USERNAME}" \
-     --env SPRING_DATASOURCE_PASSWORD="${SPRING_DATASOURCE_PASSWORD}" \
-     --env SPRING_DATA_MONGODB_URI="${SPRING_DATA_MONGODB_URI}" \
-     --network=sausage_network \
-     --restart=always \
-     "${CI_REGISTRY_IMAGE}"/sausage-backend:latest 
+export SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+export SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+export SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+export SPRING_DATASOURCE_HOST=${SPRING_DATASOURCE_HOST}
+export SPRING_DATASOURCE_PORT=${SPRING_DATASOURCE_PORT}
+export SPRING_DATASOURCE_DATABASE=${SPRING_DATASOURCE_DATABASE}
+export SPRING_DATA_MONGODB_URI=${SPRING_DATA_MONGODB_URI}
+export BACKEND_VERSION=${BACKEND_VERSION}
+export BACKEND_REPORT_VERSION=${BACKEND_REPORT_VERSION}
+export REPORTS_MONGODB_URI=${REPORTS_MONGODB_URI}
+export FRONTEND_VERSION=${FRONTEND_VERSION}
+docker login -u ${CI_REGISTRY_USER} -p${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
+echo ${BACKEND_VERSION}
+docker network create -d bridge sausage_network || true
+echo ${REPORTS_MONGODB_URI}
+pwd
+cd /home/student/sausage-store2|| true
+docker-compose rm -s -f backend || true
+docker-compose up -d backend
+#docker-compose up -d sausage-backend
+
+#будеме переделывать эту часть
+# sudo docker run -d --name sausage-backend --env SPRING_DATASOURCE_URL="${SPRING_DATASOURCE_URL}" \
+#      --env SPRING_DATASOURCE_USERNAME="${SPRING_DATASOURCE_USERNAME}" \
+#      --env SPRING_DATASOURCE_PASSWORD="${SPRING_DATASOURCE_PASSWORD}" \
+#      --env SPRING_DATA_MONGODB_URI="${SPRING_DATA_MONGODB_URI}" \
+#      --network=sausage_network \
+#      --restart=always \
+#      "${CI_REGISTRY_IMAGE}"/sausage-backend:latest 
 
 #пока что убрал rm, чтоб мониторить работу контейнера
 # Старый код

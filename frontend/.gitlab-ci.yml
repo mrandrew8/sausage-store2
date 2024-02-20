@@ -85,7 +85,7 @@ telegram-notification-frontend: #задача с именем telegram-notificat
   #  - echo "The PREV_JOB_ID is ${PREV_JOB_ID}"  проверки, при помощи которых я определял, что записано в переменную prev_job_id
     - 'curl -X POST -H "Content-type: application/json" --data "{\"chat_id\": \"-1002134018008\", \"text\": \"${TEXT}\" }" ${TLGRM}' #отправка курлом сообщения методом post
   needs:
-    - build-frontend-code-job # прописываем зависимость от джоба с именем build-frontend-code-job
+    - build-frontend-code-job-new # прописываем зависимость от джоба с именем build-frontend-code-job
 
 
 release:
@@ -133,6 +133,8 @@ deploy-frontend:
   script:    
     - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/${CI_PROJECT_DIR}/frontend/"
     - scp ./frontend/default.conf ${DEV_USER}@${DEV_HOST}:/home/student/${CI_PROJECT_DIR}/frontend/default.conf 
+    - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/sausage-store2"
+    - scp docker-compose.yml ${DEV_USER}@${DEV_HOST}:/home/student/sausage-store2/docker-compose.yml
     - envsubst < ./frontend/deploy.sh|ssh ${DEV_USER}@${DEV_HOST} 
 
 
