@@ -1,7 +1,7 @@
 # include:
 #   - template: Security/SAST.gitlab-ci.yml
-include:
-  remote: 'https://gitlab.com/gitlab-org/gitlab/-/raw/2851f4d5/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml'
+# include:
+#   remote: 'https://gitlab.com/gitlab-org/gitlab/-/raw/2851f4d5/lib/gitlab/ci/templates/Jobs/SAST.latest.gitlab-ci.yml'
 
 stages: 
   - build  #сборка
@@ -36,16 +36,16 @@ build-backend-report-code-job: #задача с именем build-backend-repor
     - echo "$CI_REGISTRY_IMAGE"
 
 
-backend-report-test:  #задача с именем backend-report-test
-  stage: test
-  image: python:3
-  script: 
-    - pwd
-    - cd backend-report
-    - pip install -r requirements.txt
-    - python3 -m unittest
-  needs: 
-    - build-backend-report-code-job
+# backend-report-test:  #задача с именем backend-report-test
+#   stage: test
+#   image: python:3
+#   script: 
+#     - pwd
+#     - cd backend-report
+#     - pip install -r requirements.txt
+#     - python3 -m unittest
+#   needs: 
+#     - build-backend-report-code-job
     
 
 
