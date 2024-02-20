@@ -14,8 +14,6 @@ stages:
 variables:
   VERSION: 1.0.${CI_PIPELINE_ID} # добавил перменную версия
 
-
-
 build-backend-report-code-job: #задача с именем build-backend-report-code-job
   stage: build
   only:
