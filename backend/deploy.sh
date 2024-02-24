@@ -18,8 +18,29 @@ docker network create -d bridge sausage_network || true
 echo ${REPORTS_MONGODB_URI}
 pwd
 cd /home/student/sausage-store2|| true
-docker-compose rm -s -f backend || true
-docker-compose up -d backend
+
+if docker ps --format "{{.Names}}" | grep "backendblue"; then
+  ACTIVE_SERVICE=backendblue
+  INACTIVE_SERVICE=backendgreen
+  docker-compose pull $INACTIVE_SERVICE
+  docker-compose up -d $INACTIVE_SERVICE
+  docker-compose rm -s -f $ACTIVE_SERVICE
+elif docker ps --format "{{.Names}}" | grep "backendgreen"; then
+  ACTIVE_SERVICE=backendgreen
+  INACTIVE_SERVICE=backendblue
+  docker-compose pull $INACTIVE_SERVICE
+  docker-compose up -d $INACTIVE_SERVICE
+  docker-compose rm -s -f $ACTIVE_SERVICE
+else
+  ACTIVE_SERVICE=""
+  INACTIVE_SERVICE=backendblue
+  docker-compose pull $INACTIVE_SERVICE
+  docker-compose up -d $INACTIVE_SERVICE
+  docker-compose rm -s -f $ACTIVE_SERVICE
+fi
+
+# docker-compose rm -s -f backend || true
+# docker-compose up -d backend
 #docker-compose up -d sausage-backend
 
 #будеме переделывать эту часть

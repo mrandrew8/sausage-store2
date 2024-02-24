@@ -1,7 +1,7 @@
 version: "3.3"
 
 services:
-  backend:
+  backendblue:
     image: gitlab.praktikum-services.ru:5050/std-024-12/sausage-store2/sausage-backend:${BACKEND_VERSION}
     restart: 
       on-failure:5
@@ -17,6 +17,34 @@ services:
       SPRING_FLYWAY_BASELINE-ON-MIGRATE: "true"
     networks:
       - sausage-store
+    healthcheck: #хелзчек
+      test: curl --fail -s http://localhost:8080/actuator/health #проверка статуса контейнера
+      interval: 30s #промежуток между запуском проверок
+      timeout: 10s #время, за которое должна исполниться проверка.
+      start_period: 20s #время после старта контейнера, когда падение проверок не учитывается в статусе
+      retries: 6  #количество последовательных неудачных проверок, чтобы признать контейнер unhealthy
+  backendgreen:
+    image: gitlab.praktikum-services.ru:5050/std-024-12/sausage-store2/sausage-backend:${BACKEND_VERSION}
+    restart: 
+      on-failure:5
+    #container_name: sausage-backend
+    environment:
+      VIRTUAL_HOST: "backend"
+      VIRTUAL_PORT: "8080"
+      # Переменные из application.properties можно заменить переменными окружения
+      SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+      SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://${SPRING_DATASOURCE_HOST}:${SPRING_DATASOURCE_PORT}/${SPRING_DATASOURCE_DATABASE}
+      SPRING_DATA_MONGODB_URI: ${SPRING_DATA_MONGODB_URI}
+      SPRING_FLYWAY_BASELINE-ON-MIGRATE: "true"
+    networks:
+      - sausage-store
+    healthcheck: #хелзчек
+      test: curl --fail -s http://localhost:8080/actuator/health #проверка статуса контейнера
+      interval: 30s #промежуток между запуском проверок
+      timeout: 10s #время, за которое должна исполниться проверка.
+      start_period: 20s #время после старта контейнера, когда падение проверок не учитывается в статусе
+      retries: 6  #количество последовательных неудачных проверок, чтобы признать контейнер unhealthy
   backend-report:
     # build:
     #   context: backend-report
