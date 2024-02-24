@@ -20,20 +20,20 @@ pwd
 cd /home/student/sausage-store2|| true
 
 if docker ps --format "{{.Names}}" | grep "backendblue"; then
-  ACTIVE_SERVICE=backendblue
-  INACTIVE_SERVICE=backendgreen
+  export ACTIVE_SERVICE=backendblue
+  export INACTIVE_SERVICE=backendgreen
   docker-compose pull $INACTIVE_SERVICE
   docker-compose up -d $INACTIVE_SERVICE
   docker-compose rm -s -f $ACTIVE_SERVICE
 elif docker ps --format "{{.Names}}" | grep "backendgreen"; then
-  ACTIVE_SERVICE=backendgreen
-  INACTIVE_SERVICE=backendblue
+  export ACTIVE_SERVICE=backendgreen
+  export INACTIVE_SERVICE=backendblue
   docker-compose pull $INACTIVE_SERVICE
   docker-compose up -d $INACTIVE_SERVICE
   docker-compose rm -s -f $ACTIVE_SERVICE
 else
-  ACTIVE_SERVICE=""
-  INACTIVE_SERVICE=backendblue
+  export ACTIVE_SERVICE=""
+  export INACTIVE_SERVICE=backendblue
   docker-compose pull $INACTIVE_SERVICE
   docker-compose up -d $INACTIVE_SERVICE
   docker-compose rm -s -f $ACTIVE_SERVICE
