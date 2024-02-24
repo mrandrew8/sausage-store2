@@ -12,8 +12,8 @@ export BACKEND_VERSION=${BACKEND_VERSION}
 export BACKEND_REPORT_VERSION=${BACKEND_REPORT_VERSION}
 export REPORTS_MONGODB_URI=${REPORTS_MONGODB_URI}
 export FRONTEND_VERSION=${FRONTEND_VERSION}
-export BLUE_SERVICE="backendblue"
-export GREEN_SERVICE="backendgreen"
+export BLUE_SERVICE=backendblue
+export GREEN_SERVICE=backendgreen
 docker login -u ${CI_REGISTRY_USER} -p${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
 echo ${BACKEND_VERSION}
 docker network create -d bridge sausage_network || true
@@ -21,17 +21,17 @@ echo ${REPORTS_MONGODB_URI}
 pwd
 cd /home/student/sausage-store2|| true
 
-if docker ps --format "{{.Names}}" | grep "$BLUE_SERVICE"; then
-  docker-compose pull $GREEN_SERVICE
-  docker-compose up -d $GREEN_SERVICE
-  docker-compose rm -s -f $BLUE_SERVICE
-elif docker ps --format "{{.Names}}" | grep "$GREEN_SERVICE"; then
-  docker-compose pull $BLUE_SERVICE
-  docker-compose up -d $BLUE_SERVICE
-  docker-compose rm -s -f $GREEN_SERVICE
+if docker ps --format "{{.Names}}" | grep "${BLUE_SERVICE}"; then
+  docker-compose pull ${GREEN_SERVICE}
+  docker-compose up -d ${GREEN_SERVICE}
+  docker-compose rm -s -f ${BLUE_SERVICE}
+elif docker ps --format "{{.Names}}" | grep "${GREEN_SERVICE}"; then
+  docker-compose pull ${BLUE_SERVICE}
+  docker-compose up -d ${BLUE_SERVICE}
+  docker-compose rm -s -f ${GREEN_SERVICE}
 else
-  docker-compose pull $BLUE_SERVICE
-  docker-compose up -d $BLUE_SERVICE
+  docker-compose pull ${BLUE_SERVICE}
+  docker-compose up -d ${BLUE_SERVICE}
 fi
 
 # docker-compose rm -s -f backend || true
