@@ -24,15 +24,11 @@ cd /home/student/sausage-store2|| true
 if docker ps --format "{{.Names}}" | grep ${BLUE_SERVICE}; then
   docker-compose pull ${GREEN_SERVICE}
   docker-compose up -d ${GREEN_SERVICE}
-  sleep 80
-  $(docker inspect --format '{{.State.Health.Status}}' ${GREEN_SERVICE})=="healthy"
-  docker-compose rm -s -f ${BLUE_SERVICE}
+  docker-compose ps ${GREEN_SERVICE} | xargs -I {} echo "--wait {}:healthy" | xargs docker-compose rm -s -f ${BLUE_SERVICE}
 elif docker ps --format "{{.Names}}" | grep ${GREEN_SERVICE}; then
   docker-compose pull ${BLUE_SERVICE}
   docker-compose up -d ${BLUE_SERVICE}
-  sleep 80
-  $(docker inspect --format '{{.State.Health.Status}}' ${BLUE_SERVICE})=="healthy"
-  docker-compose rm -s -f ${GREEN_SERVICE}
+  docker-compose ps ${BLUE_SERVICE} | xargs -I {} echo "--wait {}:healthy" | xargs docker-compose rm -s -f ${GREEN_SERVICE}
 else
   docker-compose pull ${BLUE_SERVICE}
   docker-compose up -d ${BLUE_SERVICE}
