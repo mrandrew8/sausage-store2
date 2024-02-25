@@ -24,6 +24,8 @@ cd /home/student/sausage-store2|| true
 if docker ps --format "{{.Names}}" | grep ${BLUE_SERVICE}; then
   docker-compose pull ${GREEN_SERVICE}
   docker-compose up -d ${GREEN_SERVICE}
+  sleep 80
+  $(docker inspect --format '{{.State.Health.Status}}' ${GREEN_SERVICE})=="healthy"
   docker-compose rm -s -f ${BLUE_SERVICE}
 elif docker ps --format "{{.Names}}" | grep ${GREEN_SERVICE}; then
   docker-compose pull ${BLUE_SERVICE}
