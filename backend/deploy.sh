@@ -30,6 +30,8 @@ if docker ps --format "{{.Names}}" | grep ${BLUE_SERVICE}; then
 elif docker ps --format "{{.Names}}" | grep ${GREEN_SERVICE}; then
   docker-compose pull ${BLUE_SERVICE}
   docker-compose up -d ${BLUE_SERVICE}
+  sleep 80
+  $(docker inspect --format '{{.State.Health.Status}}' ${BLUE_SERVICE})=="healthy"
   docker-compose rm -s -f ${GREEN_SERVICE}
 else
   docker-compose pull ${BLUE_SERVICE}
