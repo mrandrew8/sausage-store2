@@ -30,10 +30,10 @@ if docker ps --format "{{.Names}}" | grep ${BLUE_SERVICE}; then
     echo "Wait for container backendgreen"
     sleep 4
   done
-  if count1=20; then 
+  if count1>=20; then 
   echo "backendgreen not healthy"
-  ggwp
-  else 
+  else
+  echo "backendgreen healthy"
   docker-compose rm -s -f ${BLUE_SERVICE}
   fi
 elif docker ps --format "{{.Names}}" | grep ${GREEN_SERVICE}; then
@@ -46,13 +46,12 @@ elif docker ps --format "{{.Names}}" | grep ${GREEN_SERVICE}; then
     echo "Wait for container backendblue"
     sleep 4
   done
-  if count1=20; then 
-  echo "backendgreen not healthy"
-  break
+  if count1>=20; then 
+  echo "backendblue not healthy"
   else 
-  docker-compose rm -s -f ${BLUE_SERVICE}
-  fi
+  echo "backendblue healthy"
   docker-compose rm -s -f ${GREEN_SERVICE}
+  fi
 else
   docker-compose pull ${BLUE_SERVICE}
   docker-compose up -d ${BLUE_SERVICE}
