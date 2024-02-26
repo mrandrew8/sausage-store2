@@ -14,13 +14,14 @@ export REPORTS_MONGODB_URI=${REPORTS_MONGODB_URI}
 export FRONTEND_VERSION=${FRONTEND_VERSION}
 export BLUE_SERVICE=${BLUE_SERVICE}
 export GREEN_SERVICE=${GREEN_SERVICE}
+export count1=${count2}
 docker login -u ${CI_REGISTRY_USER} -p${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
 echo ${BACKEND_VERSION}
 docker network create -d bridge sausage_network || true
 echo ${REPORTS_MONGODB_URI}
 pwd
 cd /home/student/sausage-store2|| true
-count1=0
+count1=${count2}
 echo $count1
 if docker ps --format "{{.Names}}" | grep ${BLUE_SERVICE}; then #здесь мы ищем запущенн ли blue сервис бэкенда, если да, то
   docker-compose pull ${GREEN_SERVICE} #пулим образ для зеленого сервиса бэкенда
@@ -29,7 +30,7 @@ if docker ps --format "{{.Names}}" | grep ${BLUE_SERVICE}; then #здесь мы
   #count1=1 #устанавливаем стартовое значение для счтечика и запускаем цикл проверки статуса зеленого сервиса бэкенда с максимальным количеством повторений =20 с перерывами в 4 секунды.
   echo $count1
   until [[ $count1 -gt 20 ]] || [[ "$(docker inspect --format "{{.State.Health.Status}}" sausage-store2_backendgreen_1)" == "healthy" ]] ; do
-    count1=$[ $count1 + 1 ]
+    count1=$(( $count1 + 1 ))
     echo "Wait for container backendgreen"
     sleep 4
     echo $count1
@@ -49,7 +50,7 @@ elif docker ps --format "{{.Names}}" | grep ${GREEN_SERVICE}; then #если з�
   #count1=1 #устанавливаем стартовое значение для счтечика и запускаем цикл проверки статуса blue сервиса бэкенда с максимальным количеством повторений =20 с перерывами в 4 секунды.
   echo $count1
   until [[ $count1 -gt 20 ]] || [[ "$(docker inspect --format "{{.State.Health.Status}}" sausage-store2_backendblue_1)" == "healthy" ]] ; do
-    count1=$[ $count1 + 1 ]
+    count1=$(( $count1 + 1 ))
     echo "Wait for container backendblue"
     sleep 4
     echo $count1
