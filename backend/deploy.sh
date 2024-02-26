@@ -21,47 +21,29 @@ docker network create -d bridge sausage_network || true
 echo ${REPORTS_MONGODB_URI}
 pwd
 cd /home/student/sausage-store2|| true
-count1=${count2}
-echo $count1
-if docker ps --format "{{.Names}}" | grep ${BLUE_SERVICE}; then #здесь мы ищем запущенн ли blue сервис бэкенда, если да, то
-  docker-compose pull ${GREEN_SERVICE} #пулим образ для зеленого сервиса бэкенда
-  docker-compose up -d ${GREEN_SERVICE} #поднимаем зеленый сервис бэкенда
-  docker-compose ps ${GREEN_SERVICE} #проверяем зеленый сервис бэкенда
-  #count1=1 #устанавливаем стартовое значение для счтечика и запускаем цикл проверки статуса зеленого сервиса бэкенда с максимальным количеством повторений =20 с перерывами в 4 секунды.
-  echo $count1
-  until [[ $count1 -gt 20 ]] || [[ "$(docker inspect --format "{{.State.Health.Status}}" sausage-store2_backendgreen_1)" == "healthy" ]] ; do
-    count1=$(( $count1 + 1 ))
-    echo "Wait for container backendgreen"
+if docker ps --format "{{.Names}}" | grep ${BLUE_SERVICE}; then #здесь мы проверяем запущенн ли blue сервис бэкенда, если да, то обновляем green сервис
+  docker-compose pull ${GREEN_SERVICE} #пулим образ для green сервиса бэкенда
+  docker-compose up -d ${GREEN_SERVICE} #поднимаем green сервис бэкенда
+  docker-compose ps ${GREEN_SERVICE} #проверяем green сервис бэкенда
+  #запускаем цикл проверки статуса зеленого сервиса бэкенда с перерывами в 4 секунды.
+  until [[ "$(docker inspect --format "{{.State.Health.Status}}" sausage-store2_backendgreen_1)" == "healthy" ]] ; do
+    echo "wait until the backendgreen service goes into healthy status"
     sleep 4
-    echo $count1
   done
-  if [[ "$(docker inspect --format "{{.State.Health.Status}}" sausage-store2_backendgreen_1)" == "healthy" ]] ; then #Если за 20 повторений не прошла проверка зеленого сервиса бэкенда, выдаем сообщение что зеленый сервис не готов и стопаем зеленый сервис
-  echo "backendgreen healthy"
+  echo "backendgreen service in healthy status"
   docker-compose rm -s -f ${BLUE_SERVICE}
-  else # иначе выдаем сообщение что зеленый сервис бэкенда живой и стопаем голубой сервис бэкенда
-  echo "backendgreen unhealthy"
-  docker-compose rm -s -f ${GREEN_SERVICE}
-  fi
 
 elif docker ps --format "{{.Names}}" | grep ${GREEN_SERVICE}; then #если запущенн green сервис бэкенда
   docker-compose pull ${BLUE_SERVICE} #пулим образ для blue сервиса бэкенда
   docker-compose up -d ${BLUE_SERVICE} #запускаем blue сервис бэкенда
   docker-compose ps ${BLUE_SERVICE} #проверяем blue сервис бэкенда
-  #count1=1 #устанавливаем стартовое значение для счтечика и запускаем цикл проверки статуса blue сервиса бэкенда с максимальным количеством повторений =20 с перерывами в 4 секунды.
-  echo $count1
-  until [[ $count1 -gt 20 ]] || [[ "$(docker inspect --format "{{.State.Health.Status}}" sausage-store2_backendblue_1)" == "healthy" ]] ; do
-    count1=$(( $count1 + 1 ))
-    echo "Wait for container backendblue"
+  #запускаем цикл проверки статуса blue сервиса бэкенда с перерывами в 4 секунды.
+  until [[ "$(docker inspect --format "{{.State.Health.Status}}" sausage-store2_backendblue_1)" == "healthy" ]] ; do
+    echo "wait until the backendblue service goes into healthy status"
     sleep 4
-    echo $count1
   done
-  if [[ "$(docker inspect --format "{{.State.Health.Status}}" sausage-store2_backendblue_1)" == "healthy" ]] ; then #Если за 20 повторений не прошла проверка зеленого сервиса бэкенда, выдаем сообщение что blue сервис не готов и стопаем зеленый сервис
-  echo "backendblue healthy"
+  echo "backendblue service in healthy status"
   docker-compose rm -s -f ${GREEN_SERVICE}
-  else # иначе выдаем сообщение что blue сервис бэкенда живой и стопаем green сервис бэкенда
-  echo "backendblue unhealthy"
-  docker-compose rm -s -f ${BLUE_SERVICE}
-  fi
 
 else #если не попали ни в 1, ни во 2 условие, то по умолчанию стартуем blue сервис
   docker-compose pull ${BLUE_SERVICE}
