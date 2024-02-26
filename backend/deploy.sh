@@ -20,7 +20,6 @@ docker network create -d bridge sausage_network || true
 echo ${REPORTS_MONGODB_URI}
 pwd
 cd /home/student/sausage-store2|| true
-
 if docker ps --format "{{.Names}}" | grep ${BLUE_SERVICE}; then
   docker-compose pull ${GREEN_SERVICE}
   docker-compose up -d ${GREEN_SERVICE}
