@@ -14,13 +14,13 @@ export REPORTS_MONGODB_URI=${REPORTS_MONGODB_URI}
 export FRONTEND_VERSION=${FRONTEND_VERSION}
 export BLUE_SERVICE=${BLUE_SERVICE}
 export GREEN_SERVICE=${GREEN_SERVICE}
-export count1=${count}
 docker login -u ${CI_REGISTRY_USER} -p${CI_REGISTRY_PASSWORD} ${CI_REGISTRY}
 echo ${BACKEND_VERSION}
 docker network create -d bridge sausage_network || true
 echo ${REPORTS_MONGODB_URI}
 pwd
 cd /home/student/sausage-store2|| true
+count1=1
 echo $count1
 if docker ps --format "{{.Names}}" | grep ${BLUE_SERVICE}; then #здесь мы ищем запущенн ли blue сервис бэкенда, если да, то
   docker-compose pull ${GREEN_SERVICE} #пулим образ для зеленого сервиса бэкенда
