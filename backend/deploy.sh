@@ -28,11 +28,11 @@ if docker ps --format "{{.Names}}" | grep ${BLUE_SERVICE}; then
   until [[ $count1 -gt 20 ]] || [[ "$(docker inspect --format "{{.State.Health.Status}}" sausage-store2_backendgreen_1)" == "healthy" ]] ; do
     let count1=count1+1
     echo "Wait for container backendgreen"
-    sleep 2
+    sleep 4
   done
   if count1=20; then 
   echo "backendgreen not healthy"
-  break
+  ggwp
   else 
   docker-compose rm -s -f ${BLUE_SERVICE}
   fi
@@ -44,7 +44,7 @@ elif docker ps --format "{{.Names}}" | grep ${GREEN_SERVICE}; then
   until [[ $count1 -gt 20 ]] || [[ "$(docker inspect --format "{{.State.Health.Status}}" sausage-store2_backendblue_1)" == "healthy" ]] ; do
     let count1=count1+1
     echo "Wait for container backendblue"
-    sleep 2
+    sleep 4
   done
   if count1=20; then 
   echo "backendgreen not healthy"
