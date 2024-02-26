@@ -52,6 +52,7 @@ elif docker ps --format "{{.Names}}" | grep ${GREEN_SERVICE}; then #если з�
     let count1=$(($count1 + 1 ))
     echo "Wait for container backendblue"
     sleep 4
+    echo $count1
   done
   if [[ "$(docker inspect --format "{{.State.Health.Status}}" sausage-store2_backendblue_1)" == "healthy" ]] ; then #Если за 20 повторений не прошла проверка зеленого сервиса бэкенда, выдаем сообщение что blue сервис не готов и стопаем зеленый сервис
   echo "backendblue healthy"
