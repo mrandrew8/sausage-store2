@@ -25,13 +25,34 @@ if docker ps --format "{{.Names}}" | grep ${BLUE_SERVICE}; then
   docker-compose pull ${GREEN_SERVICE}
   docker-compose up -d ${GREEN_SERVICE}
   docker-compose ps ${GREEN_SERVICE}
-  "$(docker inspect --format '{{.State.Health.Status}}' ${GREEN_SERVICE})=="healthy""
+  count1=1
+  until [[ $count1 -gt 20 ]] || [[ "$(docker inspect --format "{{.State.Health.Status}}" sausage-store2_backendgreen_1)" == "healthy" ]] ; do
+    let count1=count1+1
+    echo "Wait for container backendgreen"
+    sleep 2
+  done
+  if count1=20; then 
+  echo "backendgreen not healthy"
+  break
+  else 
   docker-compose rm -s -f ${BLUE_SERVICE}
+  fi
 elif docker ps --format "{{.Names}}" | grep ${GREEN_SERVICE}; then
   docker-compose pull ${BLUE_SERVICE}
   docker-compose up -d ${BLUE_SERVICE}
   docker-compose ps ${BLUE_SERVICE}
-  "$(docker inspect --format '{{.State.Health.Status}}' ${BLUE_SERVICE})=="healthy""
+  count1=1
+  until [[ $count1 -gt 20 ]] || [[ "$(docker inspect --format "{{.State.Health.Status}}" sausage-store2_backendblue_1)" == "healthy" ]] ; do
+    let count1=count1+1
+    echo "Wait for container backendblue"
+    sleep 2
+  done
+  if count1=20; then 
+  echo "backendgreen not healthy"
+  break
+  else 
+  docker-compose rm -s -f ${BLUE_SERVICE}
+  fi
   docker-compose rm -s -f ${GREEN_SERVICE}
 else
   docker-compose pull ${BLUE_SERVICE}
