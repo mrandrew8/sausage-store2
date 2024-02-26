@@ -27,7 +27,7 @@ if docker ps --format "{{.Names}}" | grep ${BLUE_SERVICE}; then #здесь мы
   count1=1 #устанавливаем стартовое значение для счтечика и запускаем цикл проверки статуса зеленого сервиса бэкенда с максимальным количеством повторений =20 с перерывами в 4 секунды.
   echo $count1
   until [[ $count1 -gt 20 ]] || [[ "$(docker inspect --format "{{.State.Health.Status}}" sausage-store2_backendgreen_1)" == "healthy" ]] ; do
-    let $count1=$(($count1 + 1 ))
+    let count1=$(($count1 + 1 ))
     echo "Wait for container backendgreen"
     sleep 4
     echo $count1
@@ -47,7 +47,7 @@ elif docker ps --format "{{.Names}}" | grep ${GREEN_SERVICE}; then #если з�
   count1=1 #устанавливаем стартовое значение для счтечика и запускаем цикл проверки статуса blue сервиса бэкенда с максимальным количеством повторений =20 с перерывами в 4 секунды.
   echo $count1
   until [[ $count1 -gt 20 ]] || [[ "$(docker inspect --format "{{.State.Health.Status}}" sausage-store2_backendblue_1)" == "healthy" ]] ; do
-    let $count1=$(($count1 + 1 ))
+    let count1=$(($count1 + 1 ))
     echo "Wait for container backendblue"
     sleep 4
   done
