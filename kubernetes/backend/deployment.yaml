@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: gitlab.praktikum-services.ru:5050/std-024-12/sausage-store2/sausage-backend:${BACKEND_VERSION}
+          image: gitlab.praktikum-services.ru:5050/std-024-12/sausage-store2/sausage-backend:latest
           imagePullPolicy: IfNotPresent # image извлекается только в том случае, если оно еще не присутствует локально
           # env:
           #   - name: VAULT_HOST
