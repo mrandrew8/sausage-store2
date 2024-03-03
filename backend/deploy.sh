@@ -23,7 +23,8 @@ set -xe
 # # docker network create -d bridge sausage_network || true
 # echo ${REPORTS_MONGODB_URI}
 # pwd
-<(cat /home/student/sausage-store2/backend/*.yaml) | kubectl apply -f /home/student/sausage-store2/backend -
+cd /home/student/sausage-store2/backend
+<(cat *.yaml) | kubectl apply -f -
 # if docker ps --format "{{.Names}}" | grep ${BLUE_SERVICE}; then #здесь мы проверяем запущенн ли blue сервис бэкенда, если да, то обновляем green сервис
 #   docker-compose pull ${GREEN_SERVICE} #пулим образ для green сервиса бэкенда
 #   docker-compose up -d ${GREEN_SERVICE} #поднимаем green сервис бэкенда
