@@ -1,0 +1,46 @@
+---
+apiVersion: apps/v1
+kind: Deployment # тип сущности
+metadata: # метаданные
+  name: backend
+  labels:
+    app: backend
+spec:
+  replicas: 1
+  # Стратегия развёртывания. Recreate — удалит сначала все старые Pod'ы 
+  # Есть и более гибкая стратегии, например, RollingUpdate, которая будет обновлять Pod'ы порциями  
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend
+          image: gitlab.praktikum-services.ru:5050/std-024-12/sausage-store2/sausage-backend:${BACKEND_VERSION}
+          imagePullPolicy: IfNotPresent # image извлекается только в том случае, если оно еще не присутствует локально
+          # env:
+          #   - name: VAULT_HOST
+          #     value: 51.250.8.146
+          #   - name: VAULT_TOKEN
+          #     valueFrom:
+          #       secretKeyRef:
+          #         name: vault
+          #         key: vault_token
+          ports:
+            - name: backend
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health
+              port: 8080
+            initialDelaySeconds: 15
+            periodSeconds: 30
+            timeoutSeconds: 1
+            failureThreshold: 6
+      imagePullSecrets:
+       - name: docker-config-secret # Чтобы получить образ из частного реестра, Kubernetes необходимы учетные данные. Поле imagePullSecretsв файле конфигурации указывает, что Kubernetes должен получить учетные данные из секрета с именем docker-config-secret
