@@ -125,7 +125,7 @@ deploy-backend:
 # подставим переменные в скрипт deploy.sh и выполним его на целевом хосте, где развернем сосисочный бэкенд
   script:    
     - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/sausage-store2"
-    - scp -r /kubernetes/backend ${DEV_USER}@${DEV_HOST}:/home/student/sausage-store2/
+    - scp -r kubernetes/backend ${DEV_USER}@${DEV_HOST}:/home/student/sausage-store2/
     - envsubst < ./backend/deploy.sh|ssh ${DEV_USER}@${DEV_HOST} 
   
 
