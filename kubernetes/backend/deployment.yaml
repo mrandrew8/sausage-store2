@@ -33,7 +33,7 @@ spec:
             - name: SPRING_DATA_MONGODB_URI
               value: ${SPRING_DATA_MONGODB_URI}
             - name: SPRING_FLYWAY_BASELINE-ON-MIGRATE
-              value: true
+              value: "true"
           # env:
           #   - name: VAULT_HOST
           #     value: 51.250.8.146
