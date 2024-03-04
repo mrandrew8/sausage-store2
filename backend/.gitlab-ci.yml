@@ -127,8 +127,8 @@ deploy-backend:
   script:    
     - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/sausage-store2"
     - scp -r kubernetes/backend ${DEV_USER}@${DEV_HOST}:/home/student/sausage-store2/
-    - envsubst < /home/student/sausage-store2/backend/deployment.yaml | kubectl apply -f /home/student/sausage-store2/backend | ssh ${DEV_USER}@${DEV_HOST}
-    #- envsubst < ./backend/deploy.sh|ssh ${DEV_USER}@${DEV_HOST} 
+    #- envsubst < /home/student/sausage-store2/backend/deployment.yaml | kubectl apply -f /home/student/sausage-store2/backend | ssh ${DEV_USER}@${DEV_HOST}
+    - envsubst < ./backend/deploy.sh|ssh ${DEV_USER}@${DEV_HOST} 
   
 
 # telegram-notification-backend: #задача с именем telegram-notification-backend
