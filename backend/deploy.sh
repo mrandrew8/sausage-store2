@@ -1,13 +1,13 @@
 #! /bin/bash
 #Если свалится одна из команд, рухнет и весь скрипт
-# set -xe
-# export SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
-# export SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
-# export SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+ set -xe
+ export SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+ export SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+ export SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
 # export SPRING_DATASOURCE_HOST=${SPRING_DATASOURCE_HOST}
 # export SPRING_DATASOURCE_PORT=${SPRING_DATASOURCE_PORT}
 # export SPRING_DATASOURCE_DATABASE=${SPRING_DATASOURCE_DATABASE}
-# export SPRING_DATA_MONGODB_URI=${SPRING_DATA_MONGODB_URI}
+ export SPRING_DATA_MONGODB_URI=${SPRING_DATA_MONGODB_URI}
 # export BACKEND_VERSION=${BACKEND_VERSION}
 # export BACKEND_REPORT_VERSION=${BACKEND_REPORT_VERSION}
 # export REPORTS_MONGODB_URI=${REPORTS_MONGODB_URI}
@@ -22,8 +22,8 @@
 # # docker network create -d bridge sausage_network || true
 # echo ${REPORTS_MONGODB_URI}
 # pwd
-# cd /home/student/sausage-store2/backend
-# kubectl apply -f .
+ cd /home/student/sausage-store2/backend
+ kubectl apply -f .
 # if docker ps --format "{{.Names}}" | grep ${BLUE_SERVICE}; then #здесь мы проверяем запущенн ли blue сервис бэкенда, если да, то обновляем green сервис
 #   docker-compose pull ${GREEN_SERVICE} #пулим образ для green сервиса бэкенда
 #   docker-compose up -d ${GREEN_SERVICE} #поднимаем green сервис бэкенда
