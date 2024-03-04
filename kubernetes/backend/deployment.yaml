@@ -29,7 +29,7 @@ spec:
                 secretKeyRef:
                   name: postgres
                   key: SPRING_DATASOURCE_USERNAME
-              value: ${SPRING_DATASOURCE_USERNAME}
+              value: SPRING_DATASOURCE_USERNAME
             - name: SPRING_DATASOURCE_PASSWORD
               valueFrom:
                 secretKeyRef:
