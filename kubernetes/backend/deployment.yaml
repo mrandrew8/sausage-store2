@@ -22,30 +22,19 @@ spec:
       containers:
         - name: backend
           image: gitlab.praktikum-services.ru:5050/std-024-12/sausage-store2/sausage-backend:latest
-          imagePullPolicy: Always # image извлекается только в том случае, если оно еще не присутствует локально
+          imagePullPolicy: Always # image извлекается всегда
           env:
             - name: SPRING_DATASOURCE_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: postgres
-                  key: SPRING_DATASOURCE_USERNAME
+              value: std-024-12
             - name: SPRING_DATASOURCE_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: postgres
-                  key: SPRING_DATASOURCE_PASSWORD
+              value: Testusr1234
             - name: SPRING_DATASOURCE_URL
-              valueFrom:
-                secretKeyRef:
-                  name: postgres
-                  key: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://rc1d-6ltxi07qdaaunpa5.mdb.yandexcloud.net:6432/std-024-12?ssl=true
             - name: SPRING_DATA_MONGODB_URI
-              valueFrom:
-                secretKeyRef:
-                  name: postgres
-                  key: SPRING_DATA_MONGODB_URI
+              value: mongodb://std-024-12:Testusr1234@rc1d-fmpc8y27lrcif391.mdb.yandexcloud.net:27018/std-024-12?tls=true
             - name: SPRING_FLYWAY_BASELINE-ON-MIGRATE
               value: "true"
+
           # env:
           #   - name: VAULT_HOST
           #     value: 51.250.8.146
