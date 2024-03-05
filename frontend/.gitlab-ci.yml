@@ -136,8 +136,8 @@ deploy-frontend:
     - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/sausage-store2"
     - scp -r kubernetes/frontend ${DEV_USER}@${DEV_HOST}:/home/student/sausage-store2/
     - ssh ${DEV_USER}@${DEV_HOST} "kubectl apply -f /home/student/sausage-store2/frontend"
-    - sleep 100
-    - ssh ${DEV_USER}@${DEV_HOST} "kubectl port-forward service/frontend 8080:80"
+    # - sleep 100
+    # - ssh ${DEV_USER}@${DEV_HOST} "kubectl port-forward service/frontend 8080:80"
 
 
   
