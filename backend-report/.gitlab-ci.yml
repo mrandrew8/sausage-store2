@@ -78,8 +78,8 @@ deploy-backend:
 # подставим переменные в скрипт deploy.sh и выполним его на целевом хосте, где развернем сосисочный бэкенд
   script:    
     - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/sausage-store2"
-    - scp -r kubernetes/backend ${DEV_USER}@${DEV_HOST}:/home/student/sausage-store2/
-    - ssh ${DEV_USER}@${DEV_HOST} "kubectl apply -f /home/student/sausage-store2/backend" 
+    - scp -r kubernetes/backend-report ${DEV_USER}@${DEV_HOST}:/home/student/sausage-store2/
+    - ssh ${DEV_USER}@${DEV_HOST} "kubectl apply -f /home/student/sausage-store2/backend-report" 
   
 
 telegram-notification-backend: #задача с именем telegram-notification-backend
