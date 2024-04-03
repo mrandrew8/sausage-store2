@@ -8,7 +8,7 @@ stages:
   - test #test
   - notify  #уведомление
   - release
-  - deploy
+  # - deploy
 
 
 variables:
@@ -63,23 +63,23 @@ release:
   script:
     - crane tag $CI_REGISTRY_IMAGE/backend-report:$CI_COMMIT_SHA latest
 
-deploy-backend:
-  stage: deploy
-  image: alpine:3.18
-  before_script:
-    - apk add gettext
-    - apk add openssh-client bash
-    - eval $(ssh-agent -s)
-    - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
-    - mkdir -p ~/.ssh
-    - chmod 700 ~/.ssh
-    - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
-    - chmod 644 ~/.ssh/known_hosts
-# подставим переменные в скрипт deploy.sh и выполним его на целевом хосте, где развернем сосисочный бэкенд
-  script:    
-    - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/${CI_PROJECT_DIR}"
-    - scp docker-compose.yml ${DEV_USER}@${DEV_HOST}:/home/student/${CI_PROJECT_DIR}/docker-compose.yml
-    - envsubst < ./backend-report/deploy.sh|ssh ${DEV_USER}@${DEV_HOST} 
+# deploy-backend:
+#   stage: deploy
+#   image: alpine:3.18
+#   before_script:
+#     - apk add gettext
+#     - apk add openssh-client bash
+#     - eval $(ssh-agent -s)
+#     - echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add -
+#     - mkdir -p ~/.ssh
+#     - chmod 700 ~/.ssh
+#     - echo "$SSH_KNOWN_HOSTS" >> ~/.ssh/known_hosts
+#     - chmod 644 ~/.ssh/known_hosts
+# # подставим переменные в скрипт deploy.sh и выполним его на целевом хосте, где развернем сосисочный бэкенд
+#   script:    
+#     - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/${CI_PROJECT_DIR}"
+#     - scp docker-compose.yml ${DEV_USER}@${DEV_HOST}:/home/student/${CI_PROJECT_DIR}/docker-compose.yml
+#     - envsubst < ./backend-report/deploy.sh|ssh ${DEV_USER}@${DEV_HOST} 
   
 
 telegram-notification-backend: #задача с именем telegram-notification-backend
