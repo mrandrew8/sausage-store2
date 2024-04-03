@@ -14,7 +14,8 @@ WORKDIR /app
 COPY --from=builder /usr/src/app/YandexInternalRootCA.crt .
 RUN keytool -importcert -file YandexInternalRootCA.crt \
     -alias yandex -cacerts -storepass changeit -noprompt \
-    && rm -rf YandexInternalRootCA.crt \
+    && cp YandexInternalRootCA.crt root.crt \
+#    && rm -rf YandexInternalRootCA.crt \
     && addgroup --system jaruser \
     && adduser -S -s /bin/false -G jaruser jaruser -D -H \
     && mkdir -p /home/jaruser/.postgresql \

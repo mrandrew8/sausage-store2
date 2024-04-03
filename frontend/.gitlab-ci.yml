@@ -120,7 +120,7 @@ deploy-frontend:
   stage: deploy
   image: alpine:3.18
   before_script:
-    - sleep 400
+    # - sleep 400
     - apk add gettext
     - apk add openssh-client bash
     - eval $(ssh-agent -s)
@@ -134,8 +134,10 @@ deploy-frontend:
 #    - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/${CI_PROJECT_DIR}/frontend/"
 #    - scp ./frontend/default.conf ${DEV_USER}@${DEV_HOST}:/home/student/${CI_PROJECT_DIR}/frontend/default.conf 
     - ssh ${DEV_USER}@${DEV_HOST} "mkdir -p /home/student/sausage-store2"
-    - scp docker-compose.yml ${DEV_USER}@${DEV_HOST}:/home/student/sausage-store2/docker-compose.yml
-    - envsubst < ./frontend/deploy.sh|ssh ${DEV_USER}@${DEV_HOST} 
+    - scp -r kubernetes/frontend ${DEV_USER}@${DEV_HOST}:/home/student/sausage-store2/
+    - ssh ${DEV_USER}@${DEV_HOST} "kubectl apply -f /home/student/sausage-store2/frontend"
+    # - sleep 100
+    # - ssh ${DEV_USER}@${DEV_HOST} "kubectl port-forward service/frontend 8080:80"
 
 
   
